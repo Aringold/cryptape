@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
 import { SiBytedance } from 'react-icons/si'
 import { GiStabbedNote } from 'react-icons/gi'
 import { MdGasMeter } from 'react-icons/md'
 import { FaMoneyBill } from 'react-icons/fa'
 
 function Forth() {
+
+  const [latestCells, setLatestCells] = useState([]);
+
+  useEffect(() => {
+    async function getLatestCells() {
+      await indexer.waitForSync();
+      const tip = await ckb.rpc.getTipHeader();
+      const cellCollector = await indexer.collector({ type: "all" });
+      const cells = [];
+      for await (const cell of cellCollector) {
+        if (cell.cell_output.lock.code_hash === "0x0000000000000000000000000000000000000000000000000000000000000000" &&
+          BigInt(cell.cell_output.capacity) > 6100000000n &&
+          BigInt(tip.number) - BigInt(cell.block_number) <= 100n) {
+          cells.push(cell);
+        }
+      }
+      setLatestCells(cells);
+    }
+    getLatestCells();
+  }, []);
 
   const blocks = [
     { 'block': '#17170359 (...508E3)', 'time': '30 min 54 sec ago', 'bytes': 171256, 'transactions': 119, 'gasUsed': 13746647, 'baseFee': 70.3 },

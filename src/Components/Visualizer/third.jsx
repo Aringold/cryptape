@@ -13,26 +13,7 @@ const webSocket = new WebSocket('ws://localhost:8115');
 
 
 function Third() {
-  const [latestCells, setLatestCells] = useState([]);
   const [transactions, setTransactions] = useState([]);
-
-  useEffect(() => {
-    async function getLatestCells() {
-      await indexer.waitForSync();
-      const tip = await ckb.rpc.getTipHeader();
-      const cellCollector = await indexer.collector({ type: "all" });
-      const cells = [];
-      for await (const cell of cellCollector) {
-        if (cell.cell_output.lock.code_hash === "0x0000000000000000000000000000000000000000000000000000000000000000" &&
-          BigInt(cell.cell_output.capacity) > 6100000000n &&
-          BigInt(tip.number) - BigInt(cell.block_number) <= 100n) {
-          cells.push(cell);
-        }
-      }
-      setLatestCells(cells);
-    }
-    getLatestCells();
-  }, []);
 
   const blockchain_address = [
     '0x44dd3558...f9e5433bbc',
