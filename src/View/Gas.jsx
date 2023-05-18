@@ -11,7 +11,7 @@ function Gas() {
   const [isAdvanced, setIsAdvanced] = useState(false);
 
   return (
-    <div className='h-[100vh]'>
+    <div className='h-[100vh - 108px] mb-10'>
       <div className='flex gap-8 w-max mx-auto mt-8'>
         <div className='flex items-center'>
           <ToggleSwitch
@@ -50,8 +50,8 @@ function Gas() {
       <Button gradientDuoTone="cyanToBlue" className='mt-10 text-center mx-auto'>
         <span className="text-white md:text-[32px] text-2xl md:p-4 p-2">Download Chrome Extension</span>
       </Button>
-      <div className='w-2/3 bg-blue-500 bg-opacity-40 mx-auto mt-16'>
-        <p className='text-white p-4'>
+      <div className='w-2/3 bg-black bg-opacity-80 mx-auto mt-16'>
+        <p className='text-white p-4 text-xl'>
           CRYPTAPE simulates the next 3 blocks in real time, using pending transactions. These simulations allow for the most accurate gas price predictions. Depending on the fluctuating base fee, the second and third block may have higher fees than the first. It's recommended to use the large green values, however if there is a gas war and you need an instant confirmation, you might consider overpaying.
         </p>
       </div>

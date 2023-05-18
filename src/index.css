@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 html {
-  background-color: black;
+  background-image: url('/assets/Landing/Landing/back.png');
+  background-size: cover;
   font-family: 'Encode Sans Semi Expanded', sans-serif !important;
   overflow-x: hidden;
 }

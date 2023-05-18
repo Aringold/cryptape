@@ -7,7 +7,7 @@ const OverlayMenu = ({ navbarOpen, setNavbarOpen }) => {
 
   return (
     <div
-      className={`fixed left-0 z-40 mx-auto min-w-full p-10 bg-[#FF502E] text-white transform delay-100 transition-all duration-300 ${navbarOpen ? "h-full block" : "h-0 hidden"
+      className={`fixed left-0 z-40 mx-auto min-w-full p-10 bg-blue-500 text-white transform delay-100 transition-all duration-300 ${navbarOpen ? "h-full block" : "h-0 hidden"
         }`}
     >
       <div className="w-full mt-20 flex flex-col items-center space-y-[50px]">

@@ -14,6 +14,7 @@
     "@nervosnetwork/ckb-sdk-core": "^0.109.0",
     "@nervosnetwork/ckb-sdk-rpc": "^0.109.0",
     "@nervosnetwork/ckb-sdk-utils": "^0.109.0",
+    "axios": "^1.4.0",
     "flowbite": "^1.6.5",
     "flowbite-react": "^0.4.4",
     "react": "^18.2.0",

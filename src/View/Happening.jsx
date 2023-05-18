@@ -23,7 +23,7 @@ function Happening() {
   ]
 
   return (
-    <div className='mb-8'>
+    <div className='mb-8 mt-10'>
       <div className='md:flex gap-20 space-y-4 md:space-y-0'>
         <div className='w-full md:w-1/2'>
           <CustomList title='Trending Contracts (5 min)' items={contracts} />
