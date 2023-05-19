@@ -10,56 +10,6 @@ const ckb = new CKB('http://localhost:8114');
 
 function Transaction() {
 
-  async function getLatestTransactions() {
-
-    const tipBlockNumber = await ckb.rpc.getTipBlockNumber();
-
-    let transactions = [];
-
-    // Search for the latest 10 confirmed transactions
-    for (let i = BigInt(tipBlockNumber) - 1n; i >= BigInt(tipBlockNumber) - 10n; i--) { // Note: added `n` to ensure BigInt
-
-      const block = await ckb.rpc.getBlockByNumber(i);
-
-      for (let tx of block.transactions) {
-
-        const transaction = await ckb.rpc.getTransaction(tx.hash);
-
-        if (transaction.txStatus.status === 'committed') {
-          transactions.push(transaction);
-        }
-      }
-    }
-    console.log(transactions)
-    return transactions;
-  }
-
-  async function getBlock() {
-    // const url = 'https://ckb.getblock.io/mainnet/';
-    // const data = {
-    //   jsonrpc: '2.0',
-    //   method: 'get_tip_block_number',
-    //   params: [
-    //   ],
-    //   id: 'getblock.io'
-    // };
-    // const headers = {
-    //   'x-api-key': '717ccbe2-dd81-4d4a-b495-f0bc94c456da',
-    //   'Content-Type': 'application/json'
-    // };
-
-    // try {
-    //   const response = await axios.post(url, data, { headers });
-    //   console.log(parseInt(response.data.result, 16));
-    // } catch (error) {
-    //   console.error(error);
-    // }
-  }
-
-  useEffect(() => {
-    getLatestTransactions();
-  }, [])
-
   const blockchain_address = [
     '0x44dd3558...f9e5433bbc',
     '0x44dd3558...f9e5433bbc',
