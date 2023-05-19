@@ -2,67 +2,80 @@ import React, { useState, useEffect, useCallback } from "react";
 import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
 import { SiBytedance } from 'react-icons/si'
 import { GiStabbedNote } from 'react-icons/gi'
-import { MdGasMeter } from 'react-icons/md'
+import { AiOutlineColumnWidth } from 'react-icons/ai'
 import { FaMoneyBill } from 'react-icons/fa'
 import axios from 'axios'
+import { Link } from "react-router-dom";
+
+var myHeaders = new Headers();
+myHeaders.append("Accept", "application/vnd.api+json");
+myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
+myHeaders.append("Content-Type", "application/vnd.api+json");
 
 function Block() {
 
-  const [error, setError] = useState(null);
-  const [lastBlockNumber, setLastBlockNumber] = useState('');
-  const [latestBlockNumbers, setLatestBlockNumbers] = useState([]);
   const [latestBlocks, setLatestBlocks] = useState([]);
+  const [lastBlockNumber, setLastblockNumber] = useState();
 
-  const ckb = new CKB('https://mainnet.ckb.dev/rpc')
+  const getLastBlockNumber = () => {
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
 
-  const getLastBlock = async () => {
-    try {
-      const tipHeader = await ckb.rpc.getTipHeader()
-      const tipBlockNumber = tipHeader.number
-      setLastBlockNumber(tipBlockNumber);
-      const block = await ckb.rpc.getBlockByNumber(tipBlockNumber)
-      // console.log(block)
-    } catch (error) {
-      console.error(error)
-    }
+    fetch("https://mainnet-api.explorer.nervos.org/api/v1/statistics/tip_block_number", requestOptions)
+      .then(response => response.json())
+      .then(result => setLastblockNumber(result.data.attributes.tip_block_number))
+      .catch(error => console.log('error', error));
   }
 
-  async function getLatestBlocks() {
+  const getLastBlocks = async () => {
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
     const blockNumbers = [];
     const blockData = [];
     for (let i = 0; i < 10; i++) {
-      const blockNumberHex = '0x' + (parseInt(lastBlockNumber) - i).toString(16);
-      blockNumbers.push(blockNumberHex);
+      blockNumbers.push(lastBlockNumber - i);
     }
-    console.log(blockNumbers);
 
-    Promise.all(blockNumbers.map(async (blockNumber) => {
-      const block = await ckb.rpc.getBlockByNumber(blockNumber)
-      console.log(block);
-      blockData.push(block);
-    })).then(() => {
-      console.log('All blocks retrieved!');
-      setLatestBlocks(blockData);
-    }).catch((error) => {
-      console.error(error);
-    });
+    for (let blockNumber in blockNumbers) {
+      await fetch(`https://mainnet-api.explorer.nervos.org/api/v1/blocks/${blockNumbers[blockNumber]}`, requestOptions)
+        .then(response => response.json())
+        .then(result => blockData.push(result.data.attributes))
+    }
+    setLatestBlocks(blockData);
+  }
+
+  const timeStampToReal = (timestamp) => {
+    const seconds = Math.floor(timestamp / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    const remainingSeconds = seconds % 60;
+    const remainingMinutes = minutes % 60;
+    const remainingHours = hours % 24;
+
+    if(days > 0)
+      return `${days} DAYS AGO`
+    else
+      return `${remainingHours} H ${remainingMinutes} MIN AGO`
   }
 
   useEffect(() => {
-    getLastBlock()
+    setInterval(() => {
+      getLastBlockNumber()
+    }, 5000);
   }, []);
 
   useEffect(() => {
-    if(lastBlockNumber)
-      getLatestBlocks()
+    if (lastBlockNumber)
+      getLastBlocks()
   }, [lastBlockNumber]);
-
-  const blocks = [
-    { 'block': '#17170359 (...508E3)', 'time': '30 min 54 sec ago', 'bytes': 171256, 'transactions': 119, 'gasUsed': 13746647, 'baseFee': 70.3 },
-    { 'block': '#17170359 (...508E3)', 'time': '30 min 54 sec ago', 'bytes': 171256, 'transactions': 119, 'gasUsed': 13746647, 'baseFee': 70.3 },
-    { 'block': '#17170359 (...508E3)', 'time': '30 min 54 sec ago', 'bytes': 171256, 'transactions': 119, 'gasUsed': 13746647, 'baseFee': 70.3 },
-    { 'block': '#17170359 (...508E3)', 'time': '30 min 54 sec ago', 'bytes': 171256, 'transactions': 119, 'gasUsed': 13746647, 'baseFee': 70.3 }
-  ]
 
   return (
     <div className="h-max relative items-center p-6 bg-black bg-opacity-20">
@@ -71,30 +84,30 @@ function Block() {
 
       <p className="text-4xl text-white mt-6">Nervous</p>
       <div className="bg-black bg-opacity-20 p-4 w-full mt-4">
-        <div className="border-4 border-black w-full">
+        <div className="border-4 border-black w-full overflow-y-scroll md:h-[300px] h-[600px]">
           {latestBlocks.map((block, index) => (
             <div key={index} className="bg-black bg-opacity-20 border-2 border-black md:px-8 px-2 py-2 flex flex-col items-center w-full">
               <div className="flex flex-row w-full justify-between">
-                <p className="text-white">{parseInt(block.header.number, 16)}</p>
-                <p className="text-white">{block.header.timestamp}</p>
+                <Link to={`https://explorer.nervos.org/block/${block.number}`} target="_blank"><p className="text-white">{`#${parseInt(block.number).toLocaleString()}(${block.miner_hash.slice(0, 5)}...${block.miner_hash.slice(block.miner_hash.length - 5)})`}</p></Link>
+                <p className="text-white">{timeStampToReal(Date.now() - block.timestamp)}</p>
               </div>
               <div className="md:flex justify-between gap-4 w-full mt-2 space-y-3 md:space-y-0">
                 <div className="flex md:w-1/4 w-full items-center bg-[#254354] rounded-md justify-center gap-2 py-2">
                   <SiBytedance color="white" />
-                  <p className="text-white text-center"> Bytes</p>
+                  <p className="text-white text-center">{parseInt(block.size).toLocaleString()} Bytes</p>
                 </div>
                 <div className="flex md:w-1/4 w-full items-center bg-[#255449] rounded-md justify-center gap-2 py-2">
                   <GiStabbedNote color="white" />
-                  <p className="text-white text-center">{block.transactions.length} Transactions</p>
+                  <p className="text-white text-center">{block.transactions_count} Transactions</p>
                 </div>
-                {/* <div className="flex md:w-1/4 w-full items-center bg-[#252754] rounded-md justify-center gap-2 py-2">
-                  <MdGasMeter color="white" />
-                  <p className="text-white text-center">Gas Used {block.gasUsed}</p>
+                <div className="flex md:w-1/4 w-full items-center bg-[#252754] rounded-md justify-center gap-2 py-2">
+                  <AiOutlineColumnWidth color="white" />
+                  <p className="text-white text-center">Length {parseInt(block.length).toLocaleString()}</p>
                 </div>
                 <div className="flex md:w-1/4 w-full items-center bg-[#49381E] rounded-md justify-center gap-2 py-2">
                   <FaMoneyBill color="white" />
-                  <p className="text-white text-center">Base Fee {block.baseFee}</p>
-                </div> */}
+                  <p className="text-white text-center">Transaction Fee {block.total_transaction_fee}</p>
+                </div>
               </div>
             </div>
           ))}
