@@ -12,7 +12,7 @@ export class GameScene extends Phaser.Scene {
 
   preload(): void {
     // Load a background image from a local file
-    this.load.image('bg-image', '/public/assets/lonely-road-in-the-woods-aerial.jpg');
+    this.load.image('bg-image', '/assets/lonely-road-in-the-woods-aerial.jpg');
   }
 
   init(): void {
