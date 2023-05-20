@@ -14,6 +14,9 @@ myHeaders.append("Content-Type", "application/vnd.api+json");
 function Statistic() {
 
   const [statistics, setStatistics] = useState({});
+  const [circulatingSupply, setCirculatingSupply] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [volume, setVolume] = useState(0);
 
   const getEstimatedTime = (timestamp) => {
     const seconds = Math.floor(timestamp / 1000);
@@ -25,33 +28,46 @@ function Statistic() {
     const remainingMinutes = minutes % 60;
     const remainingHours = hours % 24;
 
-    if(days > 0)
+    if (days > 0)
       return `${days} DAYS AGO`
     else
       return `${remainingHours} h ${remainingMinutes} m`
   }
 
   const getBlockchainInfo = async () => {
+
     var requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow'
     };
 
+
     await fetch("https://mainnet-api.explorer.nervos.org/api/v1/statistics", requestOptions)
       .then(response => response.json())
-      .then(result => {setStatistics(result.data.attributes)})
+      .then(result => { setStatistics(result.data.attributes) })
       .catch(error => console.log('error', error));
   }
 
   useEffect(() => {
+    fetch('https://api.coingecko.com/api/v3/coins/nervos-network?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false')
+      .then(response => response.json())
+      .then(data => {
+        setCirculatingSupply(data.market_data.circulating_supply);
+        setPrice(data.market_data.current_price.usd);
+        setVolume(data.market_data.total_volume.usd)
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
     setInterval(() => {
       getBlockchainInfo()
-    }, 2000);
-    
-  }, [])
+    }, 5000);
+
+  }, []);
   return (
-    <div className="h-max items-center md:p-6 py-6">
+    <div className="h-max items-center p-6 px-20">
       <div className="md:flex justify-between items-center w-full gap-8">
         <div className="space-y-3">
           <p className="text-[40px] font-normal text-white">Some Statistics</p>
@@ -61,19 +77,19 @@ function Statistic() {
           <div className="space-y-2">
             <p className="text-white text-base">Circulating Supply</p>
             <div className="bg-black bg-opacity-50 p-2 rounded-md">
-              <p className="text-base text-white">120,396,527 CKB</p>
+              <p className="text-base text-white">{parseInt(circulatingSupply).toLocaleString()} CKB</p>
             </div>
           </div>
           <div className="space-y-2">
             <p className="text-white text-base">Price (USD)</p>
             <div className="bg-black bg-opacity-50 p-2 rounded-md">
-              <p className="text-base text-white">$0.46</p>
+              <p className="text-base text-white">{price}</p>
             </div>
           </div>
           <div className="space-y-2">
             <p className="text-white text-base">24HR Volume (USD)</p>
             <div className="bg-black bg-opacity-50 p-2 rounded-md">
-              <p className="text-base text-white">$9,636,755</p>
+              <p className="text-base text-white">$ {volume.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -82,50 +98,50 @@ function Statistic() {
         <div className="space-y-2">
           <p className="text-white text-base">Average Block Time</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{(statistics?.average_block_time / 1000).toPrecision(3)} s</p>
+            <p className="text-base text-white text-center">{((statistics?.average_block_time | 0) / 1000).toPrecision(3)} s</p>
           </div>
         </div>
         <div className="space-y-2">
           <p className="text-white text-base">Epoch Difficulty</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{(statistics?.current_epoch_difficulty / 1000000000000000000).toPrecision(3)} EH</p>
+            <p className="text-base text-white text-center">{((statistics?.current_epoch_difficulty || 0) / 1000000000000000000).toPrecision(3)} EH</p>
           </div>
         </div>
         <div className="space-y-2">
           <p className="text-white text-base">Epoch Info</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{`${statistics?.epoch_info?.epoch_number} `}<span className="text-sm font-bold ml-3">{` ${statistics?.epoch_info?.index}/${statistics?.epoch_info?.epoch_length}`}</span></p>
+            <p className="text-base text-white text-center">{`${statistics?.epoch_info?.epoch_number || 0} `}<span className="text-sm font-bold ml-3">{` ${statistics?.epoch_info?.index}/${statistics?.epoch_info?.epoch_length}`}</span></p>
           </div>
         </div>
         <div className="space-y-2">
           <p className="text-white text-base">Estimated Epoch Time</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{getEstimatedTime(statistics?.estimated_epoch_time)}</p>
+            <p className="text-base text-white text-center">{getEstimatedTime(statistics?.estimated_epoch_time || 0)}</p>
           </div>
         </div>
         <div className="space-y-2">
           <p className="text-white text-base">Hash Rate</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{(statistics?.hash_rate / Math.pow(10, 12)).toPrecision(4)} PH</p>
+            <p className="text-base text-white text-center">{((statistics?.hash_rate || 0) / Math.pow(10, 12)).toPrecision(4)} PH</p>
           </div>
         </div>
 
         <div className="space-y-2">
           <p className="text-white text-base">Last Block Number</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{parseInt(statistics?.tip_block_number).toLocaleString()}</p>
+            <p className="text-base text-white text-center">{parseInt(statistics?.tip_block_number || 0).toLocaleString()}</p>
           </div>
         </div>
         <div className="space-y-2">
           <p className="text-white text-base">Transactions Per Minute</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{statistics?.transactions_count_per_minute} Txs</p>
+            <p className="text-base text-white text-center">{statistics?.transactions_count_per_minute || 0} Txs</p>
           </div>
         </div>
         <div className="space-y-2">
           <p className="text-white text-base">Transactions last 24 HRS</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{statistics?.transactions_last_24hrs} Txs</p>
+            <p className="text-base text-white text-center">{statistics?.transactions_last_24hrs || 0} Txs</p>
           </div>
         </div>
 

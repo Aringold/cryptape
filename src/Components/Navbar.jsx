@@ -25,9 +25,9 @@ function Navbar() {
           </div>
         </div>
         <div className='space-x-4 flex items-center justify-between'>
-          <Button gradientDuoTone="cyanToBlue" className="justify-center hidden md:block">
+          {/* <Button gradientDuoTone="cyanToBlue" className="justify-center hidden md:block">
             <span className="text-white text-2xl px-4 py-1">Connect Wallet</span>
-          </Button>
+          </Button> */}
           <div className='md:hidden block'>
             {
               navbarOpen ?

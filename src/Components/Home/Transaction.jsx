@@ -6,6 +6,7 @@ import axios from 'axios'
 import { Link } from "react-router-dom";
 
 import { default as CKB } from '@nervosnetwork/ckb-sdk-core';
+import Loading from "../Loading";
 
 const ckb = new CKB('http://localhost:8114');
 var myHeaders = new Headers();
@@ -50,7 +51,7 @@ function Transaction() {
   ]
 
   return (
-    <div className="h-max relative items-center md:p-6 py-6">
+    <div className="h-max relative items-center p-6 bg-black bg-opacity-70 px-20">
       <div className="md:flex justify-between items-center w-full gap-8">
         <div className="space-y-3 md:w-1/2 w-full">
           <p className="text-[40px] font-normal text-white">Track your Transactions.</p>
@@ -59,14 +60,19 @@ function Transaction() {
           <p className="text-xl font-normal text-white">You can also see everyone else's transactions. What goes on in the mempool? Watch and find out.</p>
 
         </div>
-        <div className="bg-black bg-opacity-50 p-4 md:w-1/2 w-full md:mt-0 mt-8">
+        <div className="bg-white bg-opacity-10 p-4 md:w-1/2 w-full md:mt-0 mt-8">
           <div className="border-4 border-black w-full h-[400px] overflow-y-scroll">
-            {lastTransactions.map((transaction, index) => (
-              <div className="bg-black bg-opacity-20 border-2 border-black px-8 py-2 flex items-center justify-between w-full" key={index}>
-                <Link to={`https://explorer.nervos.org/transaction/${transaction.attributes.transaction_hash}`} target="_blank"><p className="text-white">{`${transaction.attributes.transaction_hash.slice(0, 15)}...${transaction.attributes.transaction_hash.slice(transaction.attributes.transaction_hash.length - 15, transaction.attributes.transaction_hash.length)}`}</p></Link>
-                <FaHandPaper color="white" />
-              </div>
-            ))}
+            {
+              lastTransactions.length?
+              (lastTransactions.map((transaction, index) => (
+                <div className="bg-black bg-opacity-20 border-2 border-black px-8 py-2 flex items-center justify-between w-full" key={index}>
+                  <Link to={`https://explorer.nervos.org/transaction/${transaction.attributes.transaction_hash}`} target="_blank"><p className="text-white">{`${transaction.attributes.transaction_hash.slice(0, 10)}...${transaction.attributes.transaction_hash.slice(transaction.attributes.transaction_hash.length - 10, transaction.attributes.transaction_hash.length)}`}</p></Link>
+                  <FaHandPaper color="white" />
+                </div>
+              )))
+              :
+              <Loading />
+            }
           </div>
         </div>
       </div>

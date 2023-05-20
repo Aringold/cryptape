@@ -1,14 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToggleSwitch, Button } from 'flowbite-react'
 import Advance from '../Components/Gas/Advance';
 import Both from '../Components/Gas/Both';
 import None from '../Components/Gas/None';
 import EIP from '../Components/Gas/EIP';
+import { endGame } from '../game';
 
 function Gas() {
 
   const [isEIP, setIsEIP] = useState(false);
   const [isAdvanced, setIsAdvanced] = useState(false);
+
+  useEffect(() => {
+    endGame();
+  }, [])
 
   return (
     <div className='h-[100vh - 108px] mb-10'>

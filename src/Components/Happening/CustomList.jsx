@@ -7,7 +7,7 @@ function CustomList({ title, items }) {
       <div className='rounded-t-2xl bg-[#121920] text-center'>
         <p className='text-white py-4'>{title}</p>
       </div>
-      < ul className="" >
+      <ul className="" >
         <li className='bg-[#070B0F] py-4'>
           <div className='flex items-center justify-between px-8'>
             <p className="text-white">Name</p>
@@ -24,15 +24,15 @@ function CustomList({ title, items }) {
                 <p className="text-white">{item.name}</p>
                 {
                   item.Txs === 'hand' ?
-                  <FaHandPaper color="white" />
-                  :
-                  <p className="text-white">{item.Txs}</p>
+                    <FaHandPaper color="white" />
+                    :
+                    <p className="text-white">{item.Txs}</p>
                 }
               </div>
             </li>
           ))
         }
-      </ul >
+      </ul>
     </div>
   );
 }

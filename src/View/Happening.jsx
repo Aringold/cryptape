@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import CustomList from '../Components/Happening/CustomList'
 import { Button } from 'flowbite-react'
+import { endGame } from '../game'
 
 function Happening() {
 
@@ -22,8 +23,12 @@ function Happening() {
     { 'name': 'Peppa', 'Txs': 'hand' },
   ]
 
+  useEffect(() => {
+    endGame();
+  }, [])
+
   return (
-    <div className='mb-8 mt-10'>
+    <div className='mb-8 mt-10 md:px-[200px] px-6'>
       <div className='md:flex gap-20 space-y-4 md:space-y-0'>
         <div className='w-full md:w-1/2'>
           <CustomList title='Trending Contracts (5 min)' items={contracts} />

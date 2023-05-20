@@ -5,6 +5,7 @@
 html {
   background-image: url('/assets/Landing/Landing/back.png');
   background-size: cover;
+  background-position: center center;
   font-family: 'Encode Sans Semi Expanded', sans-serif !important;
   overflow-x: hidden;
 }
@@ -38,4 +39,9 @@ html::-webkit-scrollbar-thumb {
 }
 .slick-dots .slick-active div {
   background-color: white;
+}
+
+.strokeme {
+  color: white;
+  text-shadow: -1px -1px 0 #3F83F8 , 1px -1px 0 #3F83F8 , -1px 1px 0 #3F83F8 , 1px 1px 0 #3F83F8 ;
 }

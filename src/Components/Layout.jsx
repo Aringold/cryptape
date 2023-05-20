@@ -9,7 +9,7 @@ export default function Layout({children}) {
     <div className='h-[100vh] flex flex-col justify-between'>
       <Navbar />
       <div
-        className='px-10 mx-auto w-full z-10 relative'>
+        className='mx-auto w-full z-10 relative'>
         {children}
       </div>
       {/* <Footer /> */}
