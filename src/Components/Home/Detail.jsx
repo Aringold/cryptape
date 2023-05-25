@@ -3,7 +3,7 @@ import React from "react";
 function Detail() {
 
   return (
-    <div className="h-max relative bg-black bg-opacity-70 items-center p-6">
+    <div className="h-max relative bg-black bg-opacity-70 items-center p-6 mt-4">
       <div className="md:flex justify-between items-center">
         <img className="rounded-2xl" src="assets/Landing/Detail/computer.png" width={400}></img>
         <div className="space-y-3">

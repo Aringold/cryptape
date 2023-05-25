@@ -21,7 +21,7 @@ function Visualization() {
   }
 
   return (
-    <div className="3xl:mt-[150px]">
+    <div className="">
       <div>
         {
           transactionsToShow.map((hash, index) => (

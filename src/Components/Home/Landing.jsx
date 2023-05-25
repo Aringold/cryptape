@@ -8,12 +8,12 @@ function First() {
 
   const navigate = useNavigate();
   return (
-    <div className="mb-10 h-[100vh]">
-      <div className="justify-between items-center w-full mx-auto md:mx-0 flex flex-col h-[100vh]">
+    <div className="h-[calc(100vh-96px)]">
+      <div className="justify-between items-center w-full mx-auto md:mx-0 flex flex-col h-[calc(100vh-96px)]">
         <div className="space-y-3 w-full mx-auto mt-10">
           <p className="text-[60px] text-white font-semibold text-center strokeme">Track your Transactions with ease</p>
         </div>
-        <div className="space-y-4 items-center gap-[30px] w-max mx-auto mb-40">
+        <div className="space-y-4 items-center gap-[30px] w-max mx-auto mb-28">
           <Button gradientDuoTone="cyanToBlue" className="p-4">
             <Link to={'/visualization'}><span className="text-white md:text-[32px] text-2xl md:p-6 p-2">Launch App</span></Link>
           </Button>

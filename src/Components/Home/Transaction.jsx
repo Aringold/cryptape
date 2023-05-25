@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { default as CKB } from '@nervosnetwork/ckb-sdk-core';
 import Loading from "../Loading";
 
-const ckb = new CKB('http://localhost:8114');
+const ckb = new CKB('https://ckb-mainnet.rebase.network/');
 var myHeaders = new Headers();
 myHeaders.append("Accept", "application/vnd.api+json");
 myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
@@ -31,9 +31,7 @@ function Transaction() {
   }
 
   useEffect(() => {
-    setInterval(() => {
       getLastTransactions()
-    }, 1000);
   }, [])
 
   const blockchain_address = [
@@ -51,7 +49,7 @@ function Transaction() {
   ]
 
   return (
-    <div className="h-max relative items-center p-6 bg-black bg-opacity-70 px-20">
+    <div className="h-max relative items-center p-6 bg-black bg-opacity-70 md:px-20">
       <div className="md:flex justify-between items-center w-full gap-8">
         <div className="space-y-3 md:w-1/2 w-full">
           <p className="text-[40px] font-normal text-white">Track your Transactions.</p>
