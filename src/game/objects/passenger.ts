@@ -45,11 +45,13 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   private initSprite() {
     // variables
     this.passengerType = passengerTypes[Math.floor(Math.random() * passengerTypes.length)]
-    this.walkingSpeed = 80;
+    this.walkingSpeed = 80 + Math.round(Math.random() * 120);
     this.idleLock = false;
 
     // sprite
+    const scale = 0.5 + Math.random() * 0.5;
     this.setOrigin(0.5, 0.5);
+    this.setScale(scale, scale);
     this.setFlipX(false);
 
     // physics
@@ -103,7 +105,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
 
   private moveToRandom() {
     const x = 499 - Math.round(Math.random() * 50);
-    const y = 499 - Math.round(Math.random() * 100);
+    const y = 499 - Math.round(Math.random() * 200);
     this.target = {x, y};
     // console.log(`move to ${x} ${y}`)
     if (this.x === this.target.x) {

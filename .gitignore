@@ -8,6 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+ckb_node
+ckb_node/data/
+ckb_indexer
 dist
 dist-ssr
 *.local

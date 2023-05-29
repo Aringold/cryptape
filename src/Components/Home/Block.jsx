@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
 import { SiBytedance } from 'react-icons/si'
 import { GiStabbedNote } from 'react-icons/gi'
 import { AiOutlineColumnWidth } from 'react-icons/ai'
 import { FaMoneyBill } from 'react-icons/fa'
-import axios from 'axios'
 import { Link } from "react-router-dom";
 import Loading from "../Loading";
-import { getLastBlockNumber1 } from "../../Utils/api";
-import { useQuery } from "react-query";
 
-const ckb = new CKB('https://ckb-mainnet.rebase.network/');
 var myHeaders = new Headers();
 myHeaders.append("Accept", "application/vnd.api+json");
 myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
@@ -20,28 +15,45 @@ function Block() {
 
   const [latestBlocks, setLatestBlocks] = useState([]);
   const [lastBlockNumber, setLastblockNumber] = useState();
-  const [prevData, setPrevData] = useState(null);
-  const { data, isLoading, isError } = useQuery('lastBlockNumber', getLastBlockNumber1)
 
+  // useEffect(() => {
+  //   const mySocket = new WebSocket('ws://127.0.0.1:443');
 
-  useEffect(() => {
-    console.log('API data has changed!', data);
+  //   mySocket.addEventListener('open', function (event) {
+  //     console.log('WebSocket connection established');
 
-  }, [data, isLoading, isError]);
+  //     // Subscribe to new block events
+  //     mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["proposed_transaction"]}');
+  //   });
 
-  useEffect(() => {
-    // Create a new instance of the WebSocket provider
-    const socket = new WebSocket('ws://localhost:443');
+  //   mySocket.addEventListener('error', function (event) {
+  //     console.error('WebSocket encountered an error:', event);
+  //   });
 
-    // Subscribe to new block events
-    socket.onmessage = function (event) {
-      console.log(`Data received from server: ${event.data}`);
-    }
+  //   mySocket.addEventListener('close', function (event) {
+  //     console.warn('WebSocket connection closed:', event);
+  //   });
 
-    socket.send(`{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_tip_header"]}`)
+  //   mySocket.onmessage = function (event) {
+  //     console.log(`Data received from server: ${event.data}`);
+  //     // getBlock(parseInt(JSON.parse(JSON.parse(event.data).params.result).number, 16));
+  //   };
+  // }, []);
 
-    socket.send(`{"id": 2, "jsonrpc": "2.0", "method": "unsubscribe", "params": ["0x0"]}`)
-  }, []);
+  const getBlock = async (blockNumber) => {
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    await fetch(`https://mainnet-api.explorer.nervos.org/api/v1/blocks/${blockNumber}`, requestOptions)
+      .then(response => response.json())
+      .then((result) => {
+        latestBlocks.pop();
+        latestBlocks.push(result.data.attributes)
+      })
+  }
 
   const getLastBlockNumber = () => {
     var requestOptions = {
@@ -90,9 +102,7 @@ function Block() {
   }
 
   useEffect(() => {
-    setInterval(() => {
-      getLastBlockNumber()
-    }, 5000);
+    getLastBlockNumber()
   }, []);
 
   useEffect(() => {

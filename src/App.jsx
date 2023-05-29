@@ -7,7 +7,6 @@ import Home from './View/Home'
 import Visualization from './View/Visualization';
 import Gas from './View/Gas';
 import Happening from './View/Happening';
-
 function App() {
 
   return (

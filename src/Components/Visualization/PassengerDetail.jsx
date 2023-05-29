@@ -2,6 +2,8 @@ import Draggable from 'react-draggable';
 import React, { useRef, useState, useEffect } from 'react';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
+const ckb = new CKB('http://127.0.0.1:2083');
 
 export const PassengerDetail = (props) => {
   const { hash, handleClose } = props;
@@ -23,6 +25,16 @@ export const PassengerDetail = (props) => {
       .then(response => response.json())
       .then(result => setPendingTransaction(result.data.attributes))
       .catch(error => console.log('error', error));
+  }, [])
+
+  const getTransactionDetail = async (transactionHash) => {
+    const response = await ckb.rpc.getTransaction(hash);
+    console.log(response);
+    // setPendingTransaction(response);
+  }
+
+  useEffect(() => {
+    getTransactionDetail(hash);
   }, [])
   const nodeRef = useRef(null);
   return (
@@ -69,7 +81,7 @@ export const PassengerDetail = (props) => {
             <li className='py-2 bg-[#121920]'>
               <div className='flex items-center justify-between px-8'>
                 <p className="text-white font-bold w-1/2 text-left">Cycles</p>
-                <p className="text-white w-1/2 text-left">{parseInt(pendingTransaction?.cycles).toLocaleString()}</p>
+                <p className="text-white w-1/2 text-left">{parseInt(pendingTransaction?.cycles, 16).toLocaleString()}</p>
               </div>
             </li>
           </ul>

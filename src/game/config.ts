@@ -21,7 +21,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
       debug: false
     }
   },
-  backgroundColor: '#f5cc69',
+  backgroundColor: '#78ff02',
   render: { pixelArt: true, antialias: false },
   canvasStyle: 'position: fixed; left: 0px; top: 63px;'
 };

@@ -1,10 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextInput } from 'flowbite-react'
-import { BiSearch } from "react-icons/bi";
-import { FaHandPaper, FaArrowRight } from 'react-icons/fa';
-import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
-
-const ckb = new CKB('https://mainnet.ckb.dev/rpc')
 
 var myHeaders = new Headers();
 myHeaders.append("Accept", "application/vnd.api+json  ");
@@ -110,7 +104,7 @@ function Statistic() {
         <div className="space-y-2">
           <p className="text-white text-base">Epoch Info</p>
           <div className="bg-black bg-opacity-50 p-2 rounded-md">
-            <p className="text-base text-white text-center">{`${statistics?.epoch_info?.epoch_number || 0} `}<span className="text-sm font-bold ml-3">{` ${statistics?.epoch_info?.index}/${statistics?.epoch_info?.epoch_length}`}</span></p>
+            <p className="text-base text-white text-center">{`${statistics?.epoch_info?.epoch_number || 0} `}<span className="text-sm font-bold ml-3">{` ${statistics?.epoch_info?.index || 0}/${statistics?.epoch_info?.epoch_length || 0}`}</span></p>
           </div>
         </div>
         <div className="space-y-2">
