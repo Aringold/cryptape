@@ -30,7 +30,7 @@ export class GameScene extends Phaser.Scene {
     backgroundImage.setSize(window.innerWidth, window.innerHeight);
 
     const block = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       const newBlock = new Block({
         scene: this,
         x: 835,
