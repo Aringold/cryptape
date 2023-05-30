@@ -84,6 +84,7 @@ export class Block extends Phaser.GameObjects.Sprite {
   }
 
   public handleWalking() {
+    
     this.scene.tweens.add({
       targets: this,
       y: '-=350',

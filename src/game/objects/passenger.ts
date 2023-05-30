@@ -103,6 +103,51 @@ export class Passenger extends Phaser.GameObjects.Sprite {
     }
   }
 
+  public handleWalkingToBlock() {
+    if (!this.target) {
+      this.moveToRandom();
+      this.anims.play(`${this.passengerType}WalkDown`, true);
+    } else if ((this.body.velocity.x > 0 && this.x >= this.target.x || this.body.velocity.x < 0 && this.x <= this.target.x) &&
+      (this.body.velocity.y > 0 && this.y >= this.target.y || this.body.velocity.y < 0 && this.y <= this.target.y)) {
+      if (!this.idleLock) {
+        this.idleLock = true;
+        this.body.setVelocity(0, 0);
+        setTimeout(() => {
+          this.moveToRandom();
+          this.idleLock = false;
+        }, 2000);
+      }
+    }
+  }
+
+  private moveToBlock() {
+    const x = 835;
+    const y = 350 - Math.round(Math.random() * 200);
+    this.target = { x, y };
+    // console.log(`move to ${x} ${y}`)
+    if (this.x === this.target.x) {
+      this.body.setVelocityY(this.target.y > this.y ? this.walkingSpeed : -this.walkingSpeed);
+    } else if (this.y === this.target.y) {
+      this.body.setVelocityX(this.target.x > this.x ? this.walkingSpeed : -this.walkingSpeed);
+    } else {
+      const a = (this.target.y - this.y) / (this.target.x - this.x);
+      const speedXAbs = Math.sqrt(this.walkingSpeed * this.walkingSpeed / (1 + a * a));
+      const speedX = this.target.x > this.x ? speedXAbs : -speedXAbs;
+      const speedY = a * speedX;
+      this.body.setVelocity(speedX, speedY);
+      if (speedX < 0 && -speedX >= Math.abs(speedY)) {
+        this.idleFrameName = this.passengerType + '-6.png';
+      } else if (speedX > 0 && speedX >= Math.abs(speedY)) {
+        this.idleFrameName = this.passengerType + '-6.png';
+      } else if (speedY > 0 && speedY >= Math.abs(speedX)) {
+        this.idleFrameName = this.passengerType + '-0.png';
+      } else if (speedY < 0 && -speedY > Math.abs(speedX)) {
+        this.idleFrameName = this.passengerType + '-3.png';
+      }
+      // console.log(`setVelocity ${speedX} ${speedY} ${speedX * speedX + speedY * speedY}`)
+    }
+  }
+
   private moveToRandom() {
     const x = 598 - Math.round(Math.random() * 50);
     const y = 402 - Math.round(Math.random() * 200);

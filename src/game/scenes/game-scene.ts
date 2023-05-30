@@ -74,7 +74,7 @@ export class GameScene extends Phaser.Scene {
 
     const tipBlockNumber = await ckb.rpc.getTipBlockNumber();
     console.log(parseInt(tipBlockNumber, 16));
-    const mySocket = new WebSocket('wss://81.0.246.174:443');
+    const mySocket = new WebSocket('ws://81.0.246.174:443');
     mySocket.addEventListener('open', function (event) {
       console.log('WebSocket connection established');
 
@@ -94,9 +94,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     mySocket.onmessage = (event) => {
-      console.log("event.data", event.data);
       if (JSON.parse(JSON.parse(event.data).params.result)) {
-        console.log(JSON.parse(JSON.parse(event.data).params.result).compact_target);
         if (JSON.parse(JSON.parse(event.data).params.result).compact_target) {
           console.log("block.length", block.length)
           const newBlock = new Block({
@@ -106,28 +104,34 @@ export class GameScene extends Phaser.Scene {
             texture: 'block-image',
           });
           block.push(newBlock);
+          console.log("block.length1", block.length)
           for (let i = 0; i < block.length; i++)
+          {
             block[i].handleWalking();
-          this.passengers.clear(true);
-          fetch("https://mainnet-api.explorer.nervos.org/api/v2/pending_transactions?page=2&page_size=200", requestOptions)
-            .then(response => response.json())
-            .then(result => {
-              for (let i = 0; i < result.data.length; i++) {
-                const x = 600;
-                const y = 200;
-                this.passengers.add(
-                  new Passenger({
-                    scene: this,
-                    x,
-                    y,
-                    texture: 'characters',
-                    frame: 'alien-0.png',
-                    transaction: result.data[i]
-                  })
-                );
-              }
-            })
-            .catch(error => console.log('error', error));
+          }
+          console.log(this.passengers);
+          for(let i = 0; i < 30; i ++)
+            this.passengers.children.entries[i].handleWalkingToBlock();
+          // this.passengers.clear(true);
+          // fetch("https://mainnet-api.explorer.nervos.org/api/v2/pending_transactions?page=2&page_size=200", requestOptions)
+          //   .then(response => response.json())
+          //   .then(result => {
+          //     for (let i = 0; i < result.data.length; i++) {
+          //       const x = 600;
+          //       const y = 200;
+          //       this.passengers.add(
+          //         new Passenger({
+          //           scene: this,
+          //           x,
+          //           y,
+          //           texture: 'characters',
+          //           frame: 'alien-0.png',
+          //           transaction: result.data[i]
+          //         })
+          //       );
+          //     }
+          //   })
+          //   .catch(error => console.log('error', error));
 
         }
         // console.log(`Data received from server: ${JSON.stringify(JSON.parse(JSON.parse(event.data).params.result))}`);
