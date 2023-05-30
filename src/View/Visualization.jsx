@@ -9,24 +9,27 @@ myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
 myHeaders.append("Content-Type", "application/vnd.api+json");
 
 function Visualization() {
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [detailTransaction, setDetailTransaction] = useState({});
   useEffect(() => {
     startGame();
   }, []);
 
-  const [transactionsToShow, setTransactionsToShow] = React.useState([]);
+  window.showWin = (transaction) => {
+    setIsOpen(true)
+    setDetailTransaction(transaction);
+    console.log("transaction:=>>>>>>>>", transaction);
+  }
 
-  window.showWin = (transactionHash) => {
-    setTransactionsToShow((_transactionsToShow) => [..._transactionsToShow, transactionHash]);
+  const handleClose = () => {
+    setIsOpen(false);
   }
 
   return (
     <div className="">
       <div>
-        {
-          transactionsToShow.map((hash, index) => (
-            <PassengerDetail hash={hash} key={index} handleClose={() => setTransactionsToShow(transactionsToShow.filter((transaction) => transaction !== hash))}></PassengerDetail>
-          ))
+        { isOpen &&
+          <PassengerDetail hash={detailTransaction.tx_hash || detailTransaction.transaction.hash} transaction={detailTransaction} handleClose={handleClose}></PassengerDetail>
         }
       </div>
     </div>

@@ -7,7 +7,7 @@ var myHeaders = new Headers();
 myHeaders.append("Accept", "application/vnd.api+json");
 myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
 myHeaders.append("Content-Type", "application/vnd.api+json");
-const mySocket = new WebSocket('ws://127.0.0.1:443');
+const mySocket = new WebSocket('ws://81.0.246.174:443');
 
 function Transaction() {
   const [lastTransactions, setLastTransactions] = useState([]);
@@ -32,24 +32,37 @@ function Transaction() {
     getLastTransactions();
   }, []);
 
-  mySocket.addEventListener('open', function (event) {
-    console.log('WebSocket connection established');
+  useEffect(() => {
+    getLastTransactions();
+  }, []);
 
-    // Subscribe to new block events
-    mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_transaction"]}');
-  });
+  useEffect(() => {
+    initWebSocket();
+    return () => {
+      mySocket.close()
+    };
+  }, []);
 
-  mySocket.addEventListener('error', function (event) {
-    console.error('WebSocket encountered an error:', event);
-  });
+  function initWebSocket() {
+    mySocket.addEventListener('open', function (event) {
+      console.log('WebSocket connection established1');
 
-  mySocket.addEventListener('close', function (event) {
-    console.warn('WebSocket connection closed:', event);
-  });
+      // Subscribe to new block events
+      mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_transaction"]}');
+    });
+
+    mySocket.addEventListener('error', function (event) {
+      console.error('WebSocket encountered an error:', event);
+    });
+
+    mySocket.addEventListener('close', function (event) {
+      console.warn('WebSocket connection closed:', event);
+    });
+  }
 
   mySocket.onmessage = function (event) {
     console.log(`Data received from server: ${JSON.parse(JSON.parse(event.data).params.result).transaction.hash}`);
-    
+
     if (lastTransactions.length) {
       const newTransactions = [...lastTransactions];
       newTransactions.pop();

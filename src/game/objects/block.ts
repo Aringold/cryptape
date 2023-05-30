@@ -1,4 +1,4 @@
-import { ISpriteConstructor } from '../interfaces/sprite.interface';
+import { IBlockConstructor } from '../interfaces/block.interface';
 // import {TxStreetContainer} from "../../hooks/txStreetContainer";
 
 /*
@@ -20,11 +20,13 @@ export class Block extends Phaser.GameObjects.Sprite {
 
   // variables
   private currentScene: Phaser.Scene;
-  private target!: { x: number, y: number};
+  private target!: { x: number, y: number };
   private walkingSpeed!: number;
   private idleLock!: boolean;
   private passengerType!: string;
   private idleFrameName!: string;
+  private transaction!: any;
+
   private transactionHash!: string;
 
   // input
@@ -34,24 +36,21 @@ export class Block extends Phaser.GameObjects.Sprite {
     return this.keys;
   }
 
-  constructor(aParams: ISpriteConstructor) {
-    super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame, aParams.transactionHash);
+  constructor(aParams: IBlockConstructor) {
+    super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame);
     this.currentScene = aParams.scene;
-    this.transactionHash = aParams.transactionHash;
     this.initSprite();
     this.currentScene.add.existing(this);
   }
 
   private initSprite() {
-    // variables
     this.passengerType = passengerTypes[Math.floor(Math.random() * passengerTypes.length)]
-    this.walkingSpeed = 80 + Math.round(Math.random() * 120);
+    this.walkingSpeed = 250;
     this.idleLock = false;
-
     // sprite
-    const scale = 0.5 + Math.random() * 0.5;
+    const scale = 0.5;
     this.setOrigin(0.5, 0.5);
-    this.setScale(scale, scale);
+    this.setScale(1.3, scale);
     this.setFlipX(false);
 
     // physics
@@ -61,28 +60,48 @@ export class Block extends Phaser.GameObjects.Sprite {
 
     // event
     this.setInteractive();
-    this.on('pointerover', this.onOver);
-    this.on('pointerout', this.onOut);
-    this.on('pointerdown', this.onClick);
+    // this.on('pointerover', this.onOver);
+    // this.on('pointerout', this.onOut);
+    // this.on('pointerdown', this.onClick);
   }
 
-  private onOver() {
-    window.document.body.style.cursor='pointer';
-  }
+  // private onOver() {
+  //   window.document.body.style.cursor='pointer';
+  // }
 
-  private onOut() {
-    window.document.body.style.cursor='';
-  }
+  // private onOut() {
+  //   window.document.body.style.cursor='';
+  // }
 
-  private onClick(pointer: any) {
-    window.clientX = pointer.event.clientX;
-    window.clientY = pointer.event.clientY;
-    window.showWin(this.transactionHash);
-    console.log(`onClick ${window.clientX} ${window.clientY} ${this.transactionHash}`);
-  }
+  // private onClick(pointer: any) {
+  //   window.clientX = pointer.event.clientX;
+  //   window.clientY = pointer.event.clientY;
+  //   window.showWin(this.transactionHash);
+  //   console.log(`onClick ${window.clientX} ${window.clientY} ${this.transactionHash}`);
+  // }
 
   update(): void {
+  }
 
+  public handleWalking() {
+    this.scene.tweens.add({
+      targets: this,
+      y: '-=350',
+      duration: 1000,
+      ease: 'Linear'
+    });
+  }
+
+  private moveToRandom() {
+
+    // Create a tween to move the character to the target position
+    this.scene.tweens.add({
+      targets: this,
+
+      duration: 2,
+      ease: 'Linear'
+    });
+    // console.log(`setVelocity ${speedX} ${speedY} ${speedX * speedX + speedY * speedY}`)
   }
 
 }

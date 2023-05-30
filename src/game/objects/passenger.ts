@@ -20,12 +20,12 @@ export class Passenger extends Phaser.GameObjects.Sprite {
 
   // variables
   private currentScene: Phaser.Scene;
-  private target!: { x: number, y: number};
+  private target!: { x: number, y: number };
   private walkingSpeed!: number;
   private idleLock!: boolean;
   private passengerType!: string;
   private idleFrameName!: string;
-  private transactionHash!: string;
+  private transaction!: any;
 
   // input
   private keys!: Map<string, Phaser.Input.Keyboard.Key>;
@@ -35,9 +35,9 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   }
 
   constructor(aParams: ISpriteConstructor) {
-    super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame, aParams.transactionHash);
+    super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame);
     this.currentScene = aParams.scene;
-    this.transactionHash = aParams.transactionHash;
+    this.transaction = aParams.transaction;
     this.initSprite();
     this.currentScene.add.existing(this);
   }
@@ -49,7 +49,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
     this.idleLock = false;
 
     // sprite
-    const scale = 0.5 + Math.random() * 0.5;
+    const scale = 0.3 + Math.random() * 0.3;
     this.setOrigin(0.5, 0.5);
     this.setScale(scale, scale);
     this.setFlipX(false);
@@ -67,18 +67,18 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   }
 
   private onOver() {
-    window.document.body.style.cursor='pointer';
+    window.document.body.style.cursor = 'pointer';
   }
 
   private onOut() {
-    window.document.body.style.cursor='';
+    window.document.body.style.cursor = '';
   }
 
   private onClick(pointer: any) {
     window.clientX = pointer.event.clientX;
     window.clientY = pointer.event.clientY;
-    window.showWin(this.transactionHash);
-    console.log(`onClick ${window.clientX} ${window.clientY} ${this.transactionHash}`);
+    window.showWin(this.transaction);
+    console.log(`onClick ${window.clientX} ${window.clientY} ${this.transaction}`);
   }
 
   update(): void {
@@ -104,9 +104,9 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   }
 
   private moveToRandom() {
-    const x = 499 - Math.round(Math.random() * 50);
-    const y = 499 - Math.round(Math.random() * 200);
-    this.target = {x, y};
+    const x = 598 - Math.round(Math.random() * 50);
+    const y = 402 - Math.round(Math.random() * 200);
+    this.target = { x, y };
     // console.log(`move to ${x} ${y}`)
     if (this.x === this.target.x) {
       this.body.setVelocityY(this.target.y > this.y ? this.walkingSpeed : -this.walkingSpeed);

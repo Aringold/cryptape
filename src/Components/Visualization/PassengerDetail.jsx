@@ -3,39 +3,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import { AiFillCloseCircle } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
-const ckb = new CKB('http://127.0.0.1:2083');
+const ckb = new CKB('http://81.0.246.174:2083');
 
 export const PassengerDetail = (props) => {
-  const { hash, handleClose } = props;
+  const { hash, handleClose, transaction } = props;
   const [pendingTransaction, setPendingTransaction] = useState([]);
 
-  useEffect(() => {
-    var myHeaders = new Headers();
-    myHeaders.append("Accept", "application/vnd.api+json");
-    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
-    myHeaders.append("Content-Type", "application/vnd.api+json");
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow'
-    };
-
-    fetch(`https://mainnet-api.explorer.nervos.org/api/v1/transactions/${hash}`, requestOptions)
-      .then(response => response.json())
-      .then(result => setPendingTransaction(result.data.attributes))
-      .catch(error => console.log('error', error));
-  }, [])
-
-  const getTransactionDetail = async (transactionHash) => {
-    const response = await ckb.rpc.getTransaction(hash);
-    console.log(response);
-    // setPendingTransaction(response);
-  }
-
-  useEffect(() => {
-    getTransactionDetail(hash);
-  }, [])
   const nodeRef = useRef(null);
   return (
     <Draggable
@@ -43,7 +16,7 @@ export const PassengerDetail = (props) => {
       handle=".handle"
       key={hash}
       scale={1}>
-      <div className='fixed inset-0 flex items-center justify-center z-10' ref={nodeRef}>
+      <div className='fixed inset-0 flex items-center justify-end z-10 mr-10' ref={nodeRef}>
         <div className="bg-blue-500 m-3 rounded-xl w-[450px]">
           <div className='flex justify-between items-center p-2'>
             <div className="cursor-move w-full handle p-2">
@@ -63,25 +36,25 @@ export const PassengerDetail = (props) => {
             <li className='py-2 bg-[#070B0F]'>
               <div className='flex items-center justify-between px-8'>
                 <p className="text-white font-bold w-1/2 text-left">Status</p>
-                <p className="text-white w-1/2 text-left">{pendingTransaction?.tx_status}</p>
+                <p className="text-white w-1/2 text-left">{transaction.tx_status}</p>
               </div>
             </li>
             <li className='py-2 bg-[#121920]'>
               <div className='flex items-center justify-between px-8'>
                 <p className="text-white font-bold w-1/2 text-left">Transaction Fee</p>
-                <p className="text-white w-1/2 text-left">{parseInt(pendingTransaction?.transaction_fee).toLocaleString()}</p>
+                <p className="text-white w-1/2 text-left">{(transaction.transaction_fee || parseInt(transaction.fee, 16)).toLocaleString()}</p>
               </div>
             </li>
             <li className='py-2 bg-[#070B0F]'>
               <div className='flex items-center justify-between px-8'>
                 <p className="text-white font-bold w-1/2 text-left">Size</p>
-                <p className="text-white w-1/2 text-left">{parseInt(pendingTransaction?.bytes).toLocaleString()}</p>
+                <p className="text-white w-1/2 text-left">{(transaction.tx_size || parseInt(transaction.size, 16)).toLocaleString()}</p>
               </div>
             </li>
             <li className='py-2 bg-[#121920]'>
               <div className='flex items-center justify-between px-8'>
                 <p className="text-white font-bold w-1/2 text-left">Cycles</p>
-                <p className="text-white w-1/2 text-left">{parseInt(pendingTransaction?.cycles, 16).toLocaleString()}</p>
+                <p className="text-white w-1/2 text-left">{(transaction.cycles || parseInt(transaction.cycles, 16)).toLocaleString()}</p>
               </div>
             </li>
           </ul>
