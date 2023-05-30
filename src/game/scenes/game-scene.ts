@@ -74,7 +74,7 @@ export class GameScene extends Phaser.Scene {
 
     const tipBlockNumber = await ckb.rpc.getTipBlockNumber();
     console.log(parseInt(tipBlockNumber, 16));
-    const mySocket = new WebSocket('ws://81.0.246.174:443');
+    const mySocket = new WebSocket('wss://81.0.246.174:443');
     mySocket.addEventListener('open', function (event) {
       console.log('WebSocket connection established');
 

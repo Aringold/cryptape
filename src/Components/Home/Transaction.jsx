@@ -7,7 +7,7 @@ var myHeaders = new Headers();
 myHeaders.append("Accept", "application/vnd.api+json");
 myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
 myHeaders.append("Content-Type", "application/vnd.api+json");
-const mySocket = new WebSocket('ws://81.0.246.174:443');
+const mySocket = new WebSocket('wss://81.0.246.174:443');
 
 function Transaction() {
   const [lastTransactions, setLastTransactions] = useState([]);
