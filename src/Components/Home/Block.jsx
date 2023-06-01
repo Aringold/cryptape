@@ -111,7 +111,7 @@ function Block() {
   }, [lastBlockNumber]);
 
   return (
-    <div className="h-max relative items-center p-6 bg-black bg-opacity-20 md:px-20">
+    <div className="h-max relative items-center bg-black bg-opacity-70 p-6 bg-black bg-opacity-20 md:px-20">
       <p className="text-4xl text-white">Latest Blocks.</p>
       <p className="text-base text-white">These are buses that have left the street.</p>
 

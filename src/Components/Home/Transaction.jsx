@@ -93,8 +93,13 @@ function Transaction() {
         <div className="space-y-3 md:w-1/2 w-full">
           <p className="text-[40px] font-normal text-white">Track your Transactions.</p>
           <p className="text-xl font-normal text-white">And anyone else's.</p>
-          <p className="text-xl font-normal text-white mt-6">Enter your address in the search bar and click "Follow" to automatically track any new transaction that you send and recieve. You'll be able to see exactly how close each transaction is to confirming and speed them up if needed.</p>
-          <p className="text-xl font-normal text-white">You can also see everyone else's transactions. What goes on in the mempool? Watch and find out.</p>
+          <p className="text-xl font-normal text-white text-justify">With the CKB blockchain, it's important to be able to track your transactions in real-time and know exactly how close they are to confirming. And with our new tool, you'll be able to do just that - automatically!
+
+            Simply enter your address in the search bar and click "Follow" to start tracking any new transaction that you send or receive. You'll receive automatic updates on its progress, and if needed, you can speed up the confirmation process.
+
+            But that's not all! With our tool, you can also follow anyone else's transactions. Get a glimpse into what goes on inside the mempool by watching other users' transactions and seeing how they move through the network. It's a great way to learn more about how the CKB blockchain works and what makes it so secure and reliable.
+
+            So why wait? Start tracking your transactions today - and anyone else's too!</p>
 
         </div>
         <div className="bg-white bg-opacity-10 p-4 md:w-1/2 w-full md:mt-0 mt-8">

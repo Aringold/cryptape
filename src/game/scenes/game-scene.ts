@@ -30,16 +30,21 @@ export class GameScene extends Phaser.Scene {
     backgroundImage.setSize(window.innerWidth, window.innerHeight);
 
     const block = [];
-    for (let i = 0; i < 20; i++) {
+    let tipBlockNumberHex = await ckb.rpc.getTipBlockNumber();
+    console.log(tipBlockNumberHex);
+    let tipBlockNumber = parseInt(tipBlockNumberHex, 16);
+    
+    for (let i = 0; i < 2; i++) {
       const newBlock = new Block({
         scene: this,
-        x: 835,
-        y: 300 + 350 * i,
+        x: 1030,
+        y: 450 + 550 * i,
         texture: 'block-image',
+        blockNumber: "0x" + (tipBlockNumber + i + 1).toString(16)
       });
       block.push(newBlock);
     }
-
+    tipBlockNumber = tipBlockNumber + 2;
     var myHeaders = new Headers();
 
     myHeaders.append("Accept", "application/vnd.api+json");
@@ -52,28 +57,24 @@ export class GameScene extends Phaser.Scene {
       redirect: 'follow'
     };
 
-    fetch("https://mainnet-api.explorer.nervos.org/api/v2/pending_transactions?page=2&page_size=200", requestOptions)
-      .then(response => response.json())
-      .then(result => {
-        for (let i = 0; i < result.data.length; i++) {
-          const x = 600;
-          const y = 200;
-          this.passengers.add(
-            new Passenger({
-              scene: this,
-              x,
-              y,
-              texture: 'characters',
-              frame: 'alien-0.png',
-              transaction: result.data[i]
-            })
-          );
-        }
-      })
+    const response = await ckb.rpc.getRawTxPool().then(result => {
+      for (let i = 0; i < result.pending.length; i++) {
+        const x = 800;
+        const y = 300;
+        this.passengers.add(
+          new Passenger({
+            scene: this,
+            x,
+            y,
+            texture: 'characters',
+            frame: 'alien-0.png',
+            transaction: result.pending[i]
+          })
+        );
+      }
+    })
       .catch(error => console.log('error', error));
 
-    const tipBlockNumber = await ckb.rpc.getTipBlockNumber();
-    console.log(parseInt(tipBlockNumber, 16));
     const mySocket = new WebSocket('ws://81.0.246.174:443');
     mySocket.addEventListener('open', function (event) {
       console.log('WebSocket connection established');
@@ -93,25 +94,30 @@ export class GameScene extends Phaser.Scene {
       console.warn('WebSocket connection closed:', event);
     });
 
-    mySocket.onmessage = (event) => {
+    mySocket.onmessage = async (event) => {
       if (JSON.parse(JSON.parse(event.data).params.result)) {
         if (JSON.parse(JSON.parse(event.data).params.result).compact_target) {
-          console.log("block.length", block.length)
+          // console.log('JSON.parse(JSON.parse(event.data).params.result): ', JSON.parse(JSON.parse(event.data).params.result));
+          const blockInfo = await ckb.rpc.getBlockByNumber(JSON.parse(JSON.parse(event.data).params.result).number);
+          console.log(blockInfo);
+          tipBlockNumber ++;
+          const newBlockY = block.length > 0 ? block[block.length - 1].y + 550 : 450;
           const newBlock = new Block({
             scene: this,
-            x: 835,
-            y: 300 + 350 * block.length,
+            x: 1030,
+            y: newBlockY,
             texture: 'block-image',
+            blockNumber: "0x" + tipBlockNumber.toString(16)
           });
           block.push(newBlock);
-          console.log("block.length1", block.length)
-          for (let i = 0; i < block.length; i++)
-          {
+          for (let i = 0; i < block.length; i++) {
             block[i].handleWalking();
           }
-          console.log(this.passengers);
-          for(let i = 0; i < 30; i ++)
-            this.passengers.children.entries[i].handleWalkingToBlock();
+          
+          console.log(parseInt(JSON.parse(JSON.parse(event.data).params.result).number, 16));
+          
+          // for(let i = 0; i < 30; i ++)
+          //   this.passengers.children.entries[i].handleWalkingToBlock();
           // this.passengers.clear(true);
           // fetch("https://mainnet-api.explorer.nervos.org/api/v2/pending_transactions?page=2&page_size=200", requestOptions)
           //   .then(response => response.json())
@@ -136,8 +142,8 @@ export class GameScene extends Phaser.Scene {
         }
         // console.log(`Data received from server: ${JSON.stringify(JSON.parse(JSON.parse(event.data).params.result))}`);
         else {
-          const x = 0;
-          const y = 200 + Math.round(Math.random() * 500)
+          const x = 300;
+          const y = 300 + Math.round(Math.random() * 500)
           this.passengers.add(
             new Passenger({
               scene: this,

@@ -12,7 +12,8 @@ declare global {
     txstreetDemo: Game;
     clientX: number;
     clientY: number;
-    showWin: (id: string) => void;
+    showTransactionWin: (id: any) => void;
+    showBlockWin: (id: any) => void;
   }
 }
 

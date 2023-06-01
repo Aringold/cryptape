@@ -61,7 +61,7 @@ function Statistic() {
 
   }, []);
   return (
-    <div className="items-center p-6 md:px-20">
+    <div className="items-center p-6 md:px-20 ">
       <div className="md:flex justify-between items-center w-full gap-8">
         <div className="space-y-3">
           <p className="text-[40px] font-normal text-white">Some Statistics</p>

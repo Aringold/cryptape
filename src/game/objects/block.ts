@@ -20,14 +20,9 @@ export class Block extends Phaser.GameObjects.Sprite {
 
   // variables
   private currentScene: Phaser.Scene;
-  private target!: { x: number, y: number };
-  private walkingSpeed!: number;
-  private idleLock!: boolean;
-  private passengerType!: string;
-  private idleFrameName!: string;
-  private transaction!: any;
+  private blockNumber!: string;
 
-  private transactionHash!: string;
+  private flag: boolean = false;
 
   // input
   private keys!: Map<string, Phaser.Input.Keyboard.Key>;
@@ -38,19 +33,17 @@ export class Block extends Phaser.GameObjects.Sprite {
 
   constructor(aParams: IBlockConstructor) {
     super(aParams.scene, aParams.x, aParams.y, aParams.texture, aParams.frame);
+    this.blockNumber = aParams.blockNumber;
     this.currentScene = aParams.scene;
     this.initSprite();
     this.currentScene.add.existing(this);
   }
 
   private initSprite() {
-    this.passengerType = passengerTypes[Math.floor(Math.random() * passengerTypes.length)]
-    this.walkingSpeed = 250;
-    this.idleLock = false;
     // sprite
     const scale = 0.5;
     this.setOrigin(0.5, 0.5);
-    this.setScale(1.3, scale);
+    this.setScale(1, 0.8);
     this.setFlipX(false);
 
     // physics
@@ -62,7 +55,7 @@ export class Block extends Phaser.GameObjects.Sprite {
     this.setInteractive();
     // this.on('pointerover', this.onOver);
     // this.on('pointerout', this.onOut);
-    // this.on('pointerdown', this.onClick);
+    this.on('pointerdown', this.onClick);
   }
 
   // private onOver() {
@@ -73,26 +66,31 @@ export class Block extends Phaser.GameObjects.Sprite {
   //   window.document.body.style.cursor='';
   // }
 
-  // private onClick(pointer: any) {
-  //   window.clientX = pointer.event.clientX;
-  //   window.clientY = pointer.event.clientY;
-  //   window.showWin(this.transactionHash);
-  //   console.log(`onClick ${window.clientX} ${window.clientY} ${this.transactionHash}`);
-  // }
+  private onClick(pointer: any) {
+    window.clientX = pointer.event.clientX;
+    window.clientY = pointer.event.clientY;
+    window.showBlockWin(this.blockNumber);
+    console.log(`onClick ${window.clientX} ${window.clientY} ${this.blockNumber}`);
+  }
 
   update(): void {
   }
 
   public handleWalking() {
-    
-    this.scene.tweens.add({
-      targets: this,
-      y: '-=350',
-      duration: 1000,
-      ease: 'Linear'
-    });
+    if (!this.flag) {
+      this.flag = true;
+      this.scene.tweens.add({
+        targets: this,
+        y: '-=550',
+        duration: 1000,
+        ease: 'Linear',
+        onComplete: () => {
+          // Reset the flag variable when the animation is complete.
+          this.flag = false;
+        }
+      });
+    }
   }
-
   private moveToRandom() {
 
     // Create a tween to move the character to the target position

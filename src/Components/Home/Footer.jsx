@@ -5,7 +5,7 @@ import { BsTwitter, BsTelegram, BsDiscord } from 'react-icons/bs'
 function Footer() {
 
   return (
-    <div className="bg-black bg-opacity-50 w-full">
+    <div className="bg-black bg-opacity-70 w-full">
       <div className="md:flex items-center justify-between py-10 px-20 text-center">
         <p className="text-white md:text-[40px] text-3xl">JOIN US ON</p>
         <div className="flex gap-4 justify-center mt-2 md:mt-0">

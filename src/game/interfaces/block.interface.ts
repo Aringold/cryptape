@@ -5,4 +5,5 @@ export interface IBlockConstructor {
   y: number;
   texture: string;
   frame?: string | number;
+  blockNumber: string;
 }

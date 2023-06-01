@@ -17,7 +17,7 @@ function Navbar() {
       <OverlayMenu navbarOpen={navbarOpen} setNavbarOpen={setNavbarOpen} />
       <div className={`flex items-center py-3 justify-between w-full md:px-[70px] px-4 z-50 relative ${navbarOpen ? "bg-black" : "bg-black bg-opacity-50"}`}>
         <div className='flex items-center cursor-pointer gap-20'>
-          <img src='assets/icon.jpg' className='h-[72px]' alt='logo'></img>
+          <img src='assets/icon.jpg' className='h-[40px]' alt='logo'></img>
           <div className='flex items-center gap-8'>
             <p className='text-2xl font-medium text-white hidden md:block cursor-pointer' onClick={() => navigate("/")}>🚌 Home</p>
             <p className='text-2xl font-medium text-white hidden md:block cursor-pointer' onClick={() => navigate("/gas")}>⛽ Gas Price </p>

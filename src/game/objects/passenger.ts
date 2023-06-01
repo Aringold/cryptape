@@ -45,7 +45,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   private initSprite() {
     // variables
     this.passengerType = passengerTypes[Math.floor(Math.random() * passengerTypes.length)]
-    this.walkingSpeed = 80 + Math.round(Math.random() * 120);
+    this.walkingSpeed = 300 + Math.round(Math.random() * 120);
     this.idleLock = false;
 
     // sprite
@@ -77,7 +77,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   private onClick(pointer: any) {
     window.clientX = pointer.event.clientX;
     window.clientY = pointer.event.clientY;
-    window.showWin(this.transaction);
+    window.showTransactionWin(this.transaction);
     console.log(`onClick ${window.clientX} ${window.clientY} ${this.transaction}`);
   }
 
@@ -121,7 +121,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   }
 
   private moveToBlock() {
-    const x = 835;
+    const x = 1035;
     const y = 350 - Math.round(Math.random() * 200);
     this.target = { x, y };
     // console.log(`move to ${x} ${y}`)
@@ -149,8 +149,8 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   }
 
   private moveToRandom() {
-    const x = 598 - Math.round(Math.random() * 50);
-    const y = 402 - Math.round(Math.random() * 200);
+    const x = 798 - Math.round(Math.random() * 50);
+    const y = 502 - Math.round(Math.random() * 200);
     this.target = { x, y };
     // console.log(`move to ${x} ${y}`)
     if (this.x === this.target.x) {

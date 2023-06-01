@@ -16,7 +16,7 @@ function Home() {
   }, [])
   
   return(
-    <div className="3xl:mt-[150px]">
+    <div className="">
       <Landing />
       <Detail />
       <Transaction />
