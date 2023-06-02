@@ -18,14 +18,28 @@ declare global {
 }
 
 export function startGame() {
+
   if (!window.txstreetDemo) {
     window.txstreetDemo = new Game(GameConfig);
     console.log(`game start ${window.txstreetDemo}`);
   }
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      window.txstreetDemo.paused = false; // pause the game when the tab becomes hidden
+    } else {
+      window.txstreetDemo.paused = false; // resume the game when the tab becomes visible
+      delete window.txstreetDemo;
+      window.txstreetDemo = new Game(GameConfig);
+    }
+  }
+
+  document.addEventListener('visibilitychange', handleVisibilityChange, false);
 }
 
 export function endGame() {
-  if(window.txstreetDemo) {
+  if (window.txstreetDemo) {
     window.txstreetDemo.destroy(true);
+    delete window.txstreetDemo;
+    window.location.reload();
   }
 }

@@ -58,7 +58,6 @@ export class Passenger extends Phaser.GameObjects.Sprite {
     this.currentScene.physics.world.enable(this);
     // this.body.setSize(6, 12);
     // this.body.setOffset(6, 4);
-
     // event
     this.setInteractive();
     this.on('pointerover', this.onOver);
@@ -78,7 +77,6 @@ export class Passenger extends Phaser.GameObjects.Sprite {
     window.clientX = pointer.event.clientX;
     window.clientY = pointer.event.clientY;
     window.showTransactionWin(this.transaction);
-    console.log(`onClick ${window.clientX} ${window.clientY} ${this.transaction}`);
   }
 
   update(): void {
@@ -87,7 +85,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   }
 
   private handleWalking() {
-    if (!this.target) {
+    if (!this.target && !this.idleLock) {
       this.moveToRandom();
       this.anims.play(`${this.passengerType}WalkDown`, true);
     } else if ((this.body.velocity.x > 0 && this.x >= this.target.x || this.body.velocity.x < 0 && this.x <= this.target.x) &&

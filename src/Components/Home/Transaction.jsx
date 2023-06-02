@@ -61,7 +61,6 @@ function Transaction() {
   }
 
   mySocket.onmessage = function (event) {
-    console.log(`Data received from server: ${JSON.parse(JSON.parse(event.data).params.result).transaction.hash}`);
 
     if (lastTransactions.length) {
       const newTransactions = [...lastTransactions];
@@ -72,20 +71,6 @@ function Transaction() {
       setLastTransactions(newTransactions);
     }
   };
-
-  const blockchain_address = [
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-    '0x44dd3558...f9e5433bbc',
-  ]
 
   return (
     <div className="h-max relative items-center p-6 bg-black bg-opacity-70 md:px-20">

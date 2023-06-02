@@ -53,24 +53,23 @@ export class Block extends Phaser.GameObjects.Sprite {
 
     // event
     this.setInteractive();
-    // this.on('pointerover', this.onOver);
-    // this.on('pointerout', this.onOut);
+    this.on('pointerover', this.onOver);
+    this.on('pointerout', this.onOut);
     this.on('pointerdown', this.onClick);
   }
 
-  // private onOver() {
-  //   window.document.body.style.cursor='pointer';
-  // }
+  private onOver() {
+    window.document.body.style.cursor='pointer';
+  }
 
-  // private onOut() {
-  //   window.document.body.style.cursor='';
-  // }
+  private onOut() {
+    window.document.body.style.cursor='';
+  }
 
   private onClick(pointer: any) {
     window.clientX = pointer.event.clientX;
     window.clientY = pointer.event.clientY;
     window.showBlockWin(this.blockNumber);
-    console.log(`onClick ${window.clientX} ${window.clientY} ${this.blockNumber}`);
   }
 
   update(): void {
@@ -82,7 +81,7 @@ export class Block extends Phaser.GameObjects.Sprite {
       this.scene.tweens.add({
         targets: this,
         y: '-=550',
-        duration: 1000,
+        duration: 100,
         ease: 'Linear',
         onComplete: () => {
           // Reset the flag variable when the animation is complete.
