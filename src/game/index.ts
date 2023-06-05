@@ -27,7 +27,7 @@ export function startGame() {
     if (document.hidden) {
       window.txstreetDemo.paused = false; // pause the game when the tab becomes hidden
     } else {
-      window.txstreetDemo.paused = false; // resume the game when the tab becomes visible
+      // window.txstreetDemo.paused = false; // resume the game when the tab becomes visible
       delete window.txstreetDemo;
       window.txstreetDemo = new Game(GameConfig);
     }

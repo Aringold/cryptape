@@ -1,22 +1,13 @@
 import Draggable from 'react-draggable';
 import React, { useRef, useState, useEffect } from 'react';
 import { AiFillCloseCircle } from 'react-icons/ai';
-import { FaHandPaper } from 'react-icons/fa'
+import { BsFillCheckSquareFill } from 'react-icons/bs'
 import { Link } from 'react-router-dom';
 import Loading from '../Loading';
-import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
-const ckb = new CKB('http://81.0.246.174:2083');
+
 
 export const BlockDetail = (props) => {
-  const { blockNumber, handleClose } = props;
-  const [detailBlock, setDetailBlock] = useState();
-
-  const getBlockInfo = async () => {
-    console.log(blockNumber);
-    const blockInfo = await ckb.rpc.getBlockByNumber(blockNumber);
-    setDetailBlock(blockInfo);
-    console.log(blockInfo);
-  }
+  const { blockNumber, detailBlock, handleClose } = props;
 
   const timestampToReal = (timestamp) => {
     const date = new Date(parseInt(timestamp, 16));
@@ -34,11 +25,6 @@ export const BlockDetail = (props) => {
 
     return dateString;
   };
-
-
-  useEffect(() => {
-    getBlockInfo();
-  }, [blockNumber])
 
   const nodeRef = useRef(null);
   return (
@@ -92,7 +78,7 @@ export const BlockDetail = (props) => {
                       (detailBlock?.transactions?.map((transaction, index) => (
                         <div className="bg-black px-20 py-2 flex items-center justify-between w-full" key={index}>
                           <Link to={`https://explorer.nervos.org/transaction/${transaction?.hash}`} target="_blank"><p className="text-white">{`${transaction?.hash.slice(0, 10)}...${transaction?.hash.slice(transaction?.hash.length - 10, transaction?.hash.length)}`}</p></Link>
-                          <FaHandPaper color="white" />
+                          <BsFillCheckSquareFill color="green" />
                         </div>
                       )))
                       :

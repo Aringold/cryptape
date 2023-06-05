@@ -58,7 +58,7 @@ export class GameScene extends Phaser.Scene {
     };
 
     const response = await ckb.rpc.getRawTxPool(true).then(async result => {
-      const pendingTransactions = Object.entries(result.pending).map(([key, value]) => ({ transaction: {hash: key}, ...value }))
+      const pendingTransactions = Object.entries(result.pending).map(([key, value]) => ({ transaction: { hash: key }, ...value }))
       for (let i = 0; i < pendingTransactions.length; i++) {
         // const asdf = await ckb.rpc.getTransaction(result.pending[i]);
         // console.log(asdf);
@@ -102,7 +102,7 @@ export class GameScene extends Phaser.Scene {
       if (JSON.parse(JSON.parse(event.data).params.result)) {
         if (JSON.parse(JSON.parse(event.data).params.result).compact_target) {
           // console.log('JSON.parse(JSON.parse(event.data).params.result): ', JSON.parse(JSON.parse(event.data).params.result));
-          
+
           // console.log(blockInfo);
           tipBlockNumber++;
           const newBlockY = block.length > 0 ? block[block.length - 1].y + 550 : -100;
@@ -115,17 +115,30 @@ export class GameScene extends Phaser.Scene {
           });
           block.push(newBlock);
           const blockInfo = await ckb.rpc.getBlockByNumber(JSON.parse(JSON.parse(event.data).params.result).number);
-          const removedItemsIndex = [];
-          for (let i = 0; i < this.passengers.children.entries.length; i++) {
-            for (let j = 0; j < blockInfo.transactions.length; j++) {
-              if (this.passengers.children.entries[i].transaction.transaction.hash === blockInfo.transactions[j].hash) {
-                removedItemsIndex.push(i);
-                this.passengers.children.entries[i].destroy(true);
-              }
+          // const removedItemsIndex = [];
+          // for (let i = 0; i < this.passengers.children.entries.length; i++) {
+          //   for (let j = 0; j < blockInfo.transactions.length; j++) {
+          //     if (this.passengers.children.entries[i].transaction.transaction.hash === blockInfo.transactions[j].hash) {
+          //       removedItemsIndex.push(this.passengers.children.entries[i].transaction.transaction.hash);
+          //       this.passengers.children.entries[i].destroy(true);
+          //     }
+          //   }
+          // }
+
+          const removedIndexes = [];
+          const filteredArr = this.passengers.children.entries.filter((entry, index) => {
+            const shouldRemove = blockInfo.transactions.some((blockTransaction) => {
+              return blockTransaction.hash === entry.transaction.transaction.hash;
+            });
+            if (shouldRemove) {
+              removedIndexes.push(index);
             }
-          }
+            return !shouldRemove;
+          });
+
           console.log(this.passengers.children.entries);
-          console.log(removedItemsIndex);
+          console.log("blockInfo.transactions:",blockInfo.transactions);
+          console.log("removedIndexes:",removedIndexes);
 
           for (let i = 0; i < block.length; i++) {
             block[i].handleWalking();
