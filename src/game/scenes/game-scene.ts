@@ -132,17 +132,16 @@ export class GameScene extends Phaser.Scene {
             });
             if (shouldRemove) {
               removedIndexes.push(index);
+              this.passengers.children.entries[index].handleWalkingToBlock();
             }
             return !shouldRemove;
           });
 
-          console.log(this.passengers.children.entries);
-          console.log("blockInfo.transactions:",blockInfo.transactions);
-          console.log("removedIndexes:",removedIndexes);
-
-          for (let i = 0; i < block.length; i++) {
-            block[i].handleWalking();
-          }
+          setTimeout(() => {
+            for (let i = 0; i < block.length; i++) {
+              block[i].handleWalking();
+            }
+          }, 800);
 
           // for(let i = 0; i < 30; i ++)
           //   this.passengers.children.entries[i].handleWalkingToBlock();

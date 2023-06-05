@@ -21,6 +21,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   // variables
   private currentScene: Phaser.Scene;
   private target!: { x: number, y: number };
+  private targetBlock!: { x: number, y: number };
   private walkingSpeed!: number;
   private idleLock!: boolean;
   private passengerType!: string;
@@ -44,12 +45,17 @@ export class Passenger extends Phaser.GameObjects.Sprite {
 
   private initSprite() {
     // variables
-    this.passengerType = passengerTypes[Math.floor(Math.random() * passengerTypes.length)]
-    this.walkingSpeed = 300 + Math.round(Math.random() * 120);
+    // this.passengerType = passengerTypes[Math.floor(Math.random() * passengerTypes.length)]
+    this.passengerType = passengerTypes[parseInt(this.transaction.cycles, 16) % passengerTypes.length];
+    this.walkingSpeed = 350 + parseInt(this.transaction.fee, 16) / 100;
+    if(this.walkingSpeed > 450) 
+      this.walkingSpeed = 450;
     this.idleLock = false;
 
     // sprite
-    const scale = 0.3 + Math.random() * 0.3;
+    let scale = 0.3 + parseInt(this.transaction.size, 16) / 10000;
+    if(scale > 1) 
+      scale = 1;
     this.setOrigin(0.5, 0.5);
     this.setScale(scale, scale);
     this.setFlipX(false);
@@ -85,23 +91,6 @@ export class Passenger extends Phaser.GameObjects.Sprite {
   }
 
   private handleWalking() {
-    if (!this.target && !this.idleLock) {
-      this.moveToRandom();
-      this.anims.play(`${this.passengerType}WalkDown`, true);
-    } else if ((this.body.velocity.x > 0 && this.x >= this.target.x || this.body.velocity.x < 0 && this.x <= this.target.x) &&
-      (this.body.velocity.y > 0 && this.y >= this.target.y || this.body.velocity.y < 0 && this.y <= this.target.y)) {
-      if (!this.idleLock) {
-        this.idleLock = true;
-        this.body.setVelocity(0, 0);
-        setTimeout(() => {
-          this.moveToRandom();
-          this.idleLock = false;
-        }, 2000);
-      }
-    }
-  }
-
-  public handleWalkingToBlock() {
     if (!this.target) {
       this.moveToRandom();
       this.anims.play(`${this.passengerType}WalkDown`, true);
@@ -113,24 +102,62 @@ export class Passenger extends Phaser.GameObjects.Sprite {
         setTimeout(() => {
           this.moveToRandom();
           this.idleLock = false;
-        }, 2000);
+        }, 3000);
       }
     }
   }
 
+  public handleWalkingToBlock() {
+    this.idleLock = true;
+    const x = 960 - this.x;
+    const y = 350 - this.y;
+    let duration = 500;
+    if(this.walkingSpeed === 350)
+      duration = 500;
+    else
+      duration = 500 - (this.walkingSpeed - 350) / 300 * 1000;
+    this.scene.tweens.add({
+      targets: this,
+      x: `+=${x}`,
+      y: `+=${y}`,
+      duration: duration,
+      ease: 'Linear',
+      onComplete: () => {
+        this.destroy(true);
+      }
+    });
+    // this.idleLock = false;
+    // if (!this.targetBlock) {
+    //   this.moveToBlock();
+    //   this.anims.play(`${this.passengerType}WalkDown`, true);
+    // } else if ((this.body.velocity.x > 0 && this.x >= this.targetBlock.x || this.body.velocity.x < 0 && this.x <= this.targetBlock.x) &&
+    //   (this.body.velocity.y > 0 && this.y >= this.targetBlock.y || this.body.velocity.y < 0 && this.y <= this.targetBlock.y)) {
+    //   if (!this.idleLock) {
+    //     this.idleLock = true;
+    //     this.body.setVelocity(0, 0);
+    //     this.destroy(true);
+    //     setTimeout(() => {
+    //       this.moveToRandom();
+    //       this.idleLock = false;
+    //     }, 2000);
+    //   }
+    // }
+  }
+
   private moveToBlock() {
-    const x = 1035;
-    const y = 350 - Math.round(Math.random() * 200);
-    this.target = { x, y };
+    this.idleLock = true;
+    const x = 960;
+    const y = 350;
+    this.targetBlock = { x, y };
     // console.log(`move to ${x} ${y}`)
-    if (this.x === this.target.x) {
-      this.body.setVelocityY(this.target.y > this.y ? this.walkingSpeed : -this.walkingSpeed);
-    } else if (this.y === this.target.y) {
-      this.body.setVelocityX(this.target.x > this.x ? this.walkingSpeed : -this.walkingSpeed);
+    if (this.x === this.targetBlock.x) {
+      this.body.setVelocityY(this.targetBlock.y > this.y ? this.walkingSpeed : -this.walkingSpeed);
+    } else if (this.y === this.targetBlock.y) {
+      this.body.setVelocityX(this.targetBlock.x > this.x ? this.walkingSpeed : -this.walkingSpeed);
     } else {
-      const a = (this.target.y - this.y) / (this.target.x - this.x);
+      const a = (this.targetBlock.y - this.y) / (this.targetBlock.x - this.x);
       const speedXAbs = Math.sqrt(this.walkingSpeed * this.walkingSpeed / (1 + a * a));
-      const speedX = this.target.x > this.x ? speedXAbs : -speedXAbs;
+      const speedX = this.targetBlock.x > this.x ? speedXAbs : -speedXAbs;
       const speedY = a * speedX;
       this.body.setVelocity(speedX, speedY);
       if (speedX < 0 && -speedX >= Math.abs(speedY)) {
