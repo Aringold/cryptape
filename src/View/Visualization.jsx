@@ -33,12 +33,14 @@ function Visualization() {
 
 
   window.showTransactionWin = (transaction) => {
+    setDetailTransaction({});
     getTransactioInfo(transaction.transaction.hash)
     setDetailTransaction(transaction);
     setIsTransactionOpen(true)
   }
 
   window.showBlockWin = (blockNumber) => {
+    setDetailBlock({});
     getBlockInfo(blockNumber);
     setBlockNumber(blockNumber);
     setIsBlockOpen(true)

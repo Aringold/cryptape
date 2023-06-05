@@ -88,6 +88,8 @@ export class GameScene extends Phaser.Scene {
 
       mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_tip_header"]}');
 
+      mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["rejected_transaction"]}');
+
     });
 
     mySocket.addEventListener('error', function (event) {
@@ -98,11 +100,9 @@ export class GameScene extends Phaser.Scene {
       console.warn('WebSocket connection closed:', event);
     });
     mySocket.onmessage = async (event) => {
-
       if (JSON.parse(JSON.parse(event.data).params.result)) {
         if (JSON.parse(JSON.parse(event.data).params.result).compact_target) {
           // console.log('JSON.parse(JSON.parse(event.data).params.result): ', JSON.parse(JSON.parse(event.data).params.result));
-
           // console.log(blockInfo);
           tipBlockNumber++;
           const newBlockY = block.length > 0 ? block[block.length - 1].y + 550 : -100;
@@ -169,22 +169,34 @@ export class GameScene extends Phaser.Scene {
         }
         // console.log(`Data received from server: ${JSON.stringify(JSON.parse(JSON.parse(event.data).params.result))}`);
         else {
-          const x = 300;
-          const y = 300 + Math.round(Math.random() * 500)
-          // console.log(JSON.parse(JSON.parse(event.data).params.result));
-          this.passengers.add(
-            new Passenger({
-              scene: this,
-              x,
-              y,
-              texture: 'characters',
-              frame: 'alien-0.png',
-              transaction: JSON.parse(JSON.parse(event.data).params.result)
-            })
-          );
+          if (JSON.parse(JSON.parse(event.data).params.result).length === 2) {
+            console.log(JSON.parse(JSON.parse(event.data).params.result)[0].transaction.hash + "rejected!!!!!!!!");
+            for (let i = 0; i < this.passengers.children.entries.length; i++) {
+              if (this.passengers.children.entries[i].transaction.transaction.hash === JSON.parse(JSON.parse(event.data).params.result)[0].transaction.hash) {
+                console.log(i);
+                this.passengers.children.entries[i].handleWalkingToHome();
+              }
+            }
+          }
+          else {
+            const x = 300;
+            const y = 300 + Math.round(Math.random() * 500)
+            // console.log(JSON.parse(JSON.parse(event.data).params.result));
+            this.passengers.add(
+              new Passenger({
+                scene: this,
+                x,
+                y,
+                texture: 'characters',
+                frame: 'alien-0.png',
+                transaction: JSON.parse(JSON.parse(event.data).params.result)
+              })
+            );
+          }
         }
       }
-    };
-  }
+    }
 
+  };
 }
+

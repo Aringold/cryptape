@@ -48,13 +48,13 @@ export class Passenger extends Phaser.GameObjects.Sprite {
     // this.passengerType = passengerTypes[Math.floor(Math.random() * passengerTypes.length)]
     this.passengerType = passengerTypes[parseInt(this.transaction.cycles, 16) % passengerTypes.length];
     this.walkingSpeed = 350 + parseInt(this.transaction.fee, 16) / 100;
-    if(this.walkingSpeed > 450) 
+    if (this.walkingSpeed > 450)
       this.walkingSpeed = 450;
     this.idleLock = false;
 
     // sprite
     let scale = 0.3 + parseInt(this.transaction.size, 16) / 10000;
-    if(scale > 1) 
+    if (scale > 1)
       scale = 1;
     this.setOrigin(0.5, 0.5);
     this.setScale(scale, scale);
@@ -112,7 +112,7 @@ export class Passenger extends Phaser.GameObjects.Sprite {
     const x = 960 - this.x;
     const y = 350 - this.y;
     let duration = 500;
-    if(this.walkingSpeed === 350)
+    if (this.walkingSpeed === 350)
       duration = 500;
     else
       duration = 500 - (this.walkingSpeed - 350) / 300 * 1000;
@@ -144,33 +144,25 @@ export class Passenger extends Phaser.GameObjects.Sprite {
     // }
   }
 
-  private moveToBlock() {
+  public handleWalkingToHome() {
     this.idleLock = true;
-    const x = 960;
-    const y = 350;
-    this.targetBlock = { x, y };
-    // console.log(`move to ${x} ${y}`)
-    if (this.x === this.targetBlock.x) {
-      this.body.setVelocityY(this.targetBlock.y > this.y ? this.walkingSpeed : -this.walkingSpeed);
-    } else if (this.y === this.targetBlock.y) {
-      this.body.setVelocityX(this.targetBlock.x > this.x ? this.walkingSpeed : -this.walkingSpeed);
-    } else {
-      const a = (this.targetBlock.y - this.y) / (this.targetBlock.x - this.x);
-      const speedXAbs = Math.sqrt(this.walkingSpeed * this.walkingSpeed / (1 + a * a));
-      const speedX = this.targetBlock.x > this.x ? speedXAbs : -speedXAbs;
-      const speedY = a * speedX;
-      this.body.setVelocity(speedX, speedY);
-      if (speedX < 0 && -speedX >= Math.abs(speedY)) {
-        this.idleFrameName = this.passengerType + '-6.png';
-      } else if (speedX > 0 && speedX >= Math.abs(speedY)) {
-        this.idleFrameName = this.passengerType + '-6.png';
-      } else if (speedY > 0 && speedY >= Math.abs(speedX)) {
-        this.idleFrameName = this.passengerType + '-0.png';
-      } else if (speedY < 0 && -speedY > Math.abs(speedX)) {
-        this.idleFrameName = this.passengerType + '-3.png';
+    const x = 300 - this.x;
+    const y = 300 + Math.round(Math.random() * 500) - this.y;
+    let duration = 1000;
+    if (this.walkingSpeed === 350)
+      duration = 1000;
+    else
+      duration = 1000 - (this.walkingSpeed - 350) / 300 * 1000;
+    this.scene.tweens.add({
+      targets: this,
+      x: `+=${x}`,
+      y: `+=${y}`,
+      duration: duration,
+      ease: 'Linear',
+      onComplete: () => {
+        this.destroy(true);
       }
-      // console.log(`setVelocity ${speedX} ${speedY} ${speedX * speedX + speedY * speedY}`)
-    }
+    });
   }
 
   private moveToRandom() {
