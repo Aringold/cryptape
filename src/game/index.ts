@@ -29,7 +29,7 @@ export function startGame() {
     } else {
       // window.txstreetDemo.paused = false; // resume the game when the tab becomes visible
       delete window.txstreetDemo;
-      window.txstreetDemo = new Game(GameConfig);
+      window.location.reload();
     }
   }
 

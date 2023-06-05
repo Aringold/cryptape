@@ -86,9 +86,9 @@ export class GameScene extends Phaser.Scene {
       // Subscribe to new block events
       mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_transaction"]}');
 
-      mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_tip_header"]}');
+      mySocket.send('{"id": 3, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_tip_header"]}');
 
-      mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["rejected_transaction"]}');
+      mySocket.send('{"id": 4, "jsonrpc": "2.0", "method": "subscribe", "params": ["rejected_transaction"]}');
 
     });
 
@@ -100,10 +100,9 @@ export class GameScene extends Phaser.Scene {
       console.warn('WebSocket connection closed:', event);
     });
     mySocket.onmessage = async (event) => {
-      if (JSON.parse(JSON.parse(event.data).params.result)) {
+      if (!JSON.parse(event.data).id) {
         if (JSON.parse(JSON.parse(event.data).params.result).compact_target) {
-          // console.log('JSON.parse(JSON.parse(event.data).params.result): ', JSON.parse(JSON.parse(event.data).params.result));
-          // console.log(blockInfo);
+
           tipBlockNumber++;
           const newBlockY = block.length > 0 ? block[block.length - 1].y + 550 : -100;
           const newBlock = new Block({
@@ -115,18 +114,9 @@ export class GameScene extends Phaser.Scene {
           });
           block.push(newBlock);
           const blockInfo = await ckb.rpc.getBlockByNumber(JSON.parse(JSON.parse(event.data).params.result).number);
-          // const removedItemsIndex = [];
-          // for (let i = 0; i < this.passengers.children.entries.length; i++) {
-          //   for (let j = 0; j < blockInfo.transactions.length; j++) {
-          //     if (this.passengers.children.entries[i].transaction.transaction.hash === blockInfo.transactions[j].hash) {
-          //       removedItemsIndex.push(this.passengers.children.entries[i].transaction.transaction.hash);
-          //       this.passengers.children.entries[i].destroy(true);
-          //     }
-          //   }
-          // }
 
           const removedIndexes = [];
-          const filteredArr = this.passengers.children.entries.filter((entry, index) => {
+          const filteredArr = this.passengers.children.entries.forEach((entry, index) => {
             const shouldRemove = blockInfo.transactions.some((blockTransaction) => {
               return blockTransaction.hash === entry.transaction.transaction.hash;
             });
@@ -142,38 +132,17 @@ export class GameScene extends Phaser.Scene {
               block[i].handleWalking();
             }
           }, 800);
-
-          // for(let i = 0; i < 30; i ++)
-          //   this.passengers.children.entries[i].handleWalkingToBlock();
-          // this.passengers.clear(true);
-          // fetch("https://mainnet-api.explorer.nervos.org/api/v2/pending_transactions?page=2&page_size=200", requestOptions)
-          //   .then(response => response.json())
-          //   .then(result => {
-          //     for (let i = 0; i < result.data.length; i++) {
-          //       const x = 600;
-          //       const y = 200;
-          //       this.passengers.add(
-          //         new Passenger({
-          //           scene: this,
-          //           x,
-          //           y,
-          //           texture: 'characters',
-          //           frame: 'alien-0.png',
-          //           transaction: result.data[i]
-          //         })
-          //       );
-          //     }
-          //   })
-          //   .catch(error => console.log('error', error));
-
+          setTimeout(() => {
+            if (block[0].y < -100) {
+              block[0].destroy(true);
+              block.splice(0, 1);
+            }
+          }, 200);
         }
-        // console.log(`Data received from server: ${JSON.stringify(JSON.parse(JSON.parse(event.data).params.result))}`);
         else {
           if (JSON.parse(JSON.parse(event.data).params.result).length === 2) {
-            console.log(JSON.parse(JSON.parse(event.data).params.result)[0].transaction.hash + "rejected!!!!!!!!");
             for (let i = 0; i < this.passengers.children.entries.length; i++) {
               if (this.passengers.children.entries[i].transaction.transaction.hash === JSON.parse(JSON.parse(event.data).params.result)[0].transaction.hash) {
-                console.log(i);
                 this.passengers.children.entries[i].handleWalkingToHome();
               }
             }

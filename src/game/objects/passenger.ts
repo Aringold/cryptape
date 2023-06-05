@@ -126,22 +126,6 @@ export class Passenger extends Phaser.GameObjects.Sprite {
         this.destroy(true);
       }
     });
-    // this.idleLock = false;
-    // if (!this.targetBlock) {
-    //   this.moveToBlock();
-    //   this.anims.play(`${this.passengerType}WalkDown`, true);
-    // } else if ((this.body.velocity.x > 0 && this.x >= this.targetBlock.x || this.body.velocity.x < 0 && this.x <= this.targetBlock.x) &&
-    //   (this.body.velocity.y > 0 && this.y >= this.targetBlock.y || this.body.velocity.y < 0 && this.y <= this.targetBlock.y)) {
-    //   if (!this.idleLock) {
-    //     this.idleLock = true;
-    //     this.body.setVelocity(0, 0);
-    //     this.destroy(true);
-    //     setTimeout(() => {
-    //       this.moveToRandom();
-    //       this.idleLock = false;
-    //     }, 2000);
-    //   }
-    // }
   }
 
   public handleWalkingToHome() {
@@ -179,7 +163,8 @@ export class Passenger extends Phaser.GameObjects.Sprite {
       const speedXAbs = Math.sqrt(this.walkingSpeed * this.walkingSpeed / (1 + a * a));
       const speedX = this.target.x > this.x ? speedXAbs : -speedXAbs;
       const speedY = a * speedX;
-      this.body.setVelocity(speedX, speedY);
+      if(this.body)
+        this.body.setVelocity(speedX, speedY);
       if (speedX < 0 && -speedX >= Math.abs(speedY)) {
         this.idleFrameName = this.passengerType + '-6.png';
       } else if (speedX > 0 && speedX >= Math.abs(speedY)) {
