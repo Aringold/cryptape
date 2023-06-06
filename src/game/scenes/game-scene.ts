@@ -46,12 +46,11 @@ export class GameScene extends Phaser.Scene {
     }
     tipBlockNumber = tipBlockNumber + 2;
 
+    // Get pending transactions and add passengers in application
     const response = await ckb.rpc.getRawTxPool(true).then(async result => {
       const pendingTransactions = Object.entries(result.pending).map(([key, value]) => ({ transaction: { hash: key }, ...value }))
       for (let i = 0; i < pendingTransactions.length; i++) {
-        // const asdf = await ckb.rpc.getTransaction(result.pending[i]);
-        // console.log(asdf);
-        // console.log(pendingTransactions);
+
         const x = 800;
         const y = 300;
         this.passengers.add(
@@ -72,11 +71,11 @@ export class GameScene extends Phaser.Scene {
     mySocket.addEventListener('open', function (event) {
       console.log('WebSocket connection established');
 
-      // Subscribe to new block events
+      // Subscribe to new transaction events
       mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_transaction"]}');
-
+      // Subscribe to new block events
       mySocket.send('{"id": 3, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_tip_header"]}');
-
+      // Subscribe to new rejected transaction event
       mySocket.send('{"id": 4, "jsonrpc": "2.0", "method": "subscribe", "params": ["rejected_transaction"]}');
 
     });
@@ -91,7 +90,7 @@ export class GameScene extends Phaser.Scene {
     mySocket.onmessage = async (event) => {
       if (!JSON.parse(event.data).id) {
         if (JSON.parse(JSON.parse(event.data).params.result).compact_target) {
-
+          // New block event
           tipBlockNumber++;
           const newBlockY = block.length > 0 ? block[block.length - 1].y + 550 : -100;
           const newBlock = new Block({
@@ -102,8 +101,11 @@ export class GameScene extends Phaser.Scene {
             blockNumber: "0x" + tipBlockNumber.toString(16)
           });
           block.push(newBlock);
+
+          // Get information of new block
           const blockInfo = await ckb.rpc.getBlockByNumber(JSON.parse(JSON.parse(event.data).params.result).number);
 
+          // Search transactions from pending transactions that confirmed by new block
           const removedIndexes = [];
           const filteredArr = this.passengers.children.entries.forEach((entry, index) => {
             const shouldRemove = blockInfo.transactions.some((blockTransaction) => {
@@ -111,16 +113,20 @@ export class GameScene extends Phaser.Scene {
             });
             if (shouldRemove) {
               removedIndexes.push(index);
+              // Action to put the transaction on the bus (in application)
               this.passengers.children.entries[index].handleWalkingToBlock();
             }
             return !shouldRemove;
           });
 
+          // Action to put the block on the nervos network (in application)
           setTimeout(() => {
             for (let i = 0; i < block.length; i++) {
               block[i].handleWalking();
             }
           }, 800);
+
+          // Remove invisible block in application for performance.
           setTimeout(() => {
             if (block[0].y < -100) {
               block[0].destroy(true);
@@ -130,16 +136,19 @@ export class GameScene extends Phaser.Scene {
         }
         else {
           if (JSON.parse(JSON.parse(event.data).params.result).length === 2) {
+            // New rejected transaction event
+
             for (let i = 0; i < this.passengers.children.entries.length; i++) {
               if (this.passengers.children.entries[i].transaction.transaction.hash === JSON.parse(JSON.parse(event.data).params.result)[0].transaction.hash) {
+                // Action to put the transaction to the home (in application)
                 this.passengers.children.entries[i].handleWalkingToHome();
               }
             }
           }
           else {
+            // New transaction event
             const x = 300;
             const y = 300 + Math.round(Math.random() * 500)
-            // console.log(JSON.parse(JSON.parse(event.data).params.result));
             this.passengers.add(
               new Passenger({
                 scene: this,
