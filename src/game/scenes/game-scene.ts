@@ -28,7 +28,7 @@ export class GameScene extends Phaser.Scene {
     const backgroundImage = this.add.image(0, 0, 'bg-image');
     backgroundImage.setOrigin(0, 0);
     backgroundImage.setSize(window.innerWidth, window.innerHeight);
-
+    this.add.text(100, 200, 'Hello World!', { color: '#ff0000', fontSize: '32px', fontWeight: 'bold' });
     const block = [];
     let tipBlockNumberHex = await ckb.rpc.getTipBlockNumber();
     // console.log(tipBlockNumberHex);
@@ -45,17 +45,6 @@ export class GameScene extends Phaser.Scene {
       block.push(newBlock);
     }
     tipBlockNumber = tipBlockNumber + 2;
-    var myHeaders = new Headers();
-
-    myHeaders.append("Accept", "application/vnd.api+json");
-    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://www.apifox.cn)");
-    myHeaders.append("Content-Type", "application/vnd.api+json");
-
-    var requestOptions: any = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow'
-    };
 
     const response = await ckb.rpc.getRawTxPool(true).then(async result => {
       const pendingTransactions = Object.entries(result.pending).map(([key, value]) => ({ transaction: { hash: key }, ...value }))

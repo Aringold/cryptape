@@ -34,6 +34,7 @@ function Visualization() {
 
   window.showTransactionWin = (transaction) => {
     setDetailTransaction({});
+    setTransactionStatus('');
     getTransactioInfo(transaction.transaction.hash)
     setDetailTransaction(transaction);
     setIsTransactionOpen(true)
@@ -41,6 +42,7 @@ function Visualization() {
 
   window.showBlockWin = (blockNumber) => {
     setDetailBlock({});
+    setBlockNumber(0);
     getBlockInfo(blockNumber);
     setBlockNumber(blockNumber);
     setIsBlockOpen(true)

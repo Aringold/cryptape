@@ -59,11 +59,11 @@ export class Block extends Phaser.GameObjects.Sprite {
   }
 
   private onOver() {
-    window.document.body.style.cursor='pointer';
+    window.document.body.style.cursor = 'pointer';
   }
 
   private onOut() {
-    window.document.body.style.cursor='';
+    window.document.body.style.cursor = '';
   }
 
   private onClick(pointer: any) {
