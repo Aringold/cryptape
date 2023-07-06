@@ -25,7 +25,7 @@ function Visualization() {
     setDetailBlock(blockInfo);
   }
 
-  const getTransactioInfo = async (hash) => {
+  const getTransactionInfo = async (hash) => {
     const response = await ckb.rpc.getTransaction(hash);
     setTransactionStatus(response.txStatus.status);
     // setPendingTransaction(response);
@@ -35,7 +35,7 @@ function Visualization() {
   window.showTransactionWin = (transaction) => {
     setDetailTransaction({});
     setTransactionStatus('');
-    getTransactioInfo(transaction.transaction.hash)
+    getTransactionInfo(transaction.transaction.hash)
     setDetailTransaction(transaction);
     setIsTransactionOpen(true)
   }

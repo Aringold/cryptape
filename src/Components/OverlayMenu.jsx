@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const OverlayMenu = ({ navbarOpen, setNavbarOpen }) => {
 
@@ -24,6 +24,7 @@ const OverlayMenu = ({ navbarOpen, setNavbarOpen }) => {
           >
             <p className="text-white text-2xl font-bold">🚌 Visualizer</p>
           </a>
+          {/* <Link to={'/'} ><p className="text-white text-2xl font-bold">🚌 Visualizer</p></Link> */}
         </div>
         <div className="nav-li">
           <a
