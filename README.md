@@ -14,31 +14,25 @@ This is a [React](https://reactjs.org) + [TypeScript](https://www.typescriptlang
 
 ## Getting started
 
-1. Create the project.
+1. Clone the project.
 
    ```bash
-   npx degit fabien-ml/react-ts-vite-template my-app
+   git clone https://github.com/suzukidavid/cryptape.git
    ```
 
 2. Access the project directory.
 
    ```bash
-   cd my-app
+   cd cryptape
    ```
 
-3. Initialize a git repository.
-
-   ```bash
-   git init
-   ```
-
-4. Install dependencies.
+3. Install dependencies.
 
    ```bash
    npm install
    ```
 
-5. Start dev server with hot reload at http://localhost:3000.
+4. Start dev server with hot reload at http://localhost:5173.
    ```bash
    npm run dev
    ```
@@ -50,39 +44,17 @@ This is a [React](https://reactjs.org) + [TypeScript](https://www.typescriptlang
 
 ## Other commands
 
-### Lint commands
-
-```bash
-npm run lint
-```
-
 ### Build commands
 
 ```bash
 npm run build
 ```
 
-### Run the app in production mode at http://localhost:3000.
+### Run the app in production mode at http://localhost:5173.
 
 ```bash
 npm run serve
 ```
-
-### Test commands
-
-- Run unit tests and watch
-  ```bash
-  npm run test:unit
-  ```
-- Run unit tests with coverage
-  ```bash
-  npm run test:unit:coverage
-  ```
-- Run e2e tests
-  ```bash
-  npm run test:e2e
-  ```
-
 ## License
 
 This project is licensed under the MIT License.
