@@ -1,6 +1,6 @@
 # Cryptape
 
-This is a [React](https://reactjs.org) + [TypeScript](https://www.typescriptlang.org/) boilerplate built with [Vite](https://vitejs.dev).
+This is a [React](https://reactjs.org) project with [Vite](https://vitejs.dev).
 
 ## What's inside?
 
