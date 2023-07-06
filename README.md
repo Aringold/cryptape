@@ -1,4 +1,5 @@
 # Cryptape
+![Simple TailwindCSS template preview](https://user-images.githubusercontent.com/2683512/231426766-72ae7bcd-618b-4a3e-87cd-b46a464bde61.png)
 
 This is a [React](https://reactjs.org) project with [Vite](https://vitejs.dev).
 
