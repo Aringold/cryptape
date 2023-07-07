@@ -61,7 +61,7 @@ This is a [React](https://reactjs.org) project with [Vite](https://vitejs.dev).
    Then you can access the rpc by your vps ip address and your own port.
 
 5. Development
-   [CKB JSON-RPC Protocols] (https://github.com/nervosnetwork/ckb/blob/develop/rpc/README.md)
+   [CKB JSON-RPC Protocols](https://github.com/nervosnetwork/ckb/blob/develop/rpc/README.md)
    Install CKB Javascript SDK and config.
 
    ```bash
