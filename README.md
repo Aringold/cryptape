@@ -44,11 +44,14 @@ This is a [React](https://reactjs.org) project with [Vite](https://vitejs.dev).
 4. Run CKB node on VPS
    Frist. download the CKB node from the [CKB Node Release page](https://github.com/nervosnetwork/ckb/releases)
    Then initialize the blockchain to the mainnet and run the node:
+
    ```bash
    ckb init --chain mainnet
    ckb run
    ```
+
    By default CKB RPC only binds to HTTP service, you need to bind WebSocket in ckb.toml.
+
    ```bash
    tcp_listen_address = "127.0.0.1:18114"
    ws_listen_address = "127.0.0.1:443"
@@ -58,7 +61,55 @@ This is a [React](https://reactjs.org) project with [Vite](https://vitejs.dev).
    Then you can access the rpc by your vps ip address and your own port.
 
 5. Development
-   
+   [CKB JSON-RPC Protocols] (https://github.com/nervosnetwork/ckb/blob/develop/rpc/README.md)
+   Install CKB Javascript SDK and config.
+
+   ```bash
+   npm install @nervosnetwork/ckb-sdk-core
+
+   import { default as CKB } from "@nervosnetwork/ckb-sdk-core";
+   const ckb = new CKB('http://YOUR_IP_ADDRESS:YOUR_PORT');
+   ```
+
+   Handle new transaction, new block, new rejected transaction event using subscribe function of ckb rpc.
+
+   ```bash
+   const mySocket = new WebSocket('YOUR_IP_ADDRESS:YOUR_PORT');
+   mySocket.addEventListener('open', function (event) {
+      console.log('WebSocket connection established');
+
+      // Subscribe to new transaction events
+      mySocket.send('{"id": 2, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_transaction"]}');
+      // Subscribe to new block events
+      mySocket.send('{"id": 3, "jsonrpc": "2.0", "method": "subscribe", "params": ["new_tip_header"]}');
+      // Subscribe to new rejected transaction event
+      mySocket.send('{"id": 4, "jsonrpc": "2.0", "method": "subscribe", "params": ["rejected_transaction"]}');
+    });
+
+    mySocket.onmessage = async (event) => {
+      //Handle new block event.
+      Call function that moves block on screen.
+      //Handle new transaction event.
+      Call function that create transaction avatar on screen and move it to the pending txs pool.
+      //Handle new rejected tx event.
+      Call function that moves avatar from pending pool to home and remove it on screen.
+    }
+   ```
+
+   Get block information and transaction information by mouse clicking.
+
+   ```bash
+   const getBlockInfo = async (blockNumber) => {
+    const blockInfo = await ckb.rpc.getBlockByNumber(blockNumber);
+    setDetailBlock(blockInfo);
+   }
+
+   const getTransactionInfo = async (hash) => {
+    const response = await ckb.rpc.getTransaction(hash);
+    setTransactionStatus(response.txStatus.status);
+    // setPendingTransaction(response);
+   }
+   ```
 
 ## Getting started
 
